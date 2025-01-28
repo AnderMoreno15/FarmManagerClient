@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 
 @XmlRootElement(name="consumes")
-public class ConsumesBean implements Serializable {
+public class ConsumesBean implements Serializable, Cloneable {
    
     
      private static final long serialVersionUID = 1L;
@@ -34,27 +34,34 @@ public class ConsumesBean implements Serializable {
     private ProductBean product;
     private Date date;  
     private Float consumeAmount;  
+
     
-   
+    
+    public ConsumesBean() {
+    }
+    
+
+    @XmlElement
     public ConsumesIdBean getConsumesId() {
         return consumesId;
     }
 
-    
+    @XmlElement
     public Float getConsumeAmount() {
         return consumeAmount;
     }
 
-   
+   @XmlElement
     public AnimalGroupBean getAnimalGroup() {
         return animalGroup;
     }
     
-  
+    @XmlElement
     public ProductBean getProduct() {
         return product;
     }
-   
+    
+    @XmlElement
     public Date getDate() {
         return date;
     }
@@ -105,5 +112,8 @@ public class ConsumesBean implements Serializable {
     public String toString() {
         return "entities.Consumes[ consume=" + consumeAmount + " ]";
     }
-    
+     @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

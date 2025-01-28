@@ -15,7 +15,7 @@ public class ConsumesManagerFactory {
     
     public static IConsumesManager get(){
         if(consumesManager==null){
-           consumesManager=new ConsumesRestClient();
+           consumesManager=new ConsumesRestClient1();
         }
         return consumesManager;
     }    

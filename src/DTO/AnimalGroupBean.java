@@ -9,6 +9,6 @@ package DTO;
  *
  * @author Usuario
  */
-class AnimalGroupBean {
+public class AnimalGroupBean {
     
 }
