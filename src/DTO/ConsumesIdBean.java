@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Pablo
  */
 @XmlRootElement(name="consumesId")
-public class ConsumesIdBean implements Serializable {
+public class ConsumesIdBean implements Serializable, Cloneable {
     
     
     private Long animalGroupId;   
@@ -54,6 +54,7 @@ public class ConsumesIdBean implements Serializable {
         return productId;
     }
     
+ 
     
     // Equals y hashCode
     @Override

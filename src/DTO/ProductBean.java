@@ -9,6 +9,6 @@ package DTO;
  *
  * @author Usuario
  */
-public class  ProductBean {
-    String productName;
+public class ProductBean {
+    
 }

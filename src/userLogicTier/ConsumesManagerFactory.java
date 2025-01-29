@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package userLogicTier;
 
+package userLogicTier;
+import userLogicTier.ConsumesRestClient;
 /**
  *
  * @author Pablo
@@ -15,7 +16,7 @@ public class ConsumesManagerFactory {
     
     public static IConsumesManager get(){
         if(consumesManager==null){
-           consumesManager=new ConsumesRestClient1();
+           consumesManager=  new ConsumesRestClient();
         }
         return consumesManager;
     }    

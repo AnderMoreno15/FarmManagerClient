@@ -4,8 +4,6 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>DTO.ConsumesBean</class>
     <class>DTO.ConsumesIdBean</class>
-    <class>userLogicTier.TestConnection</class>
-    <class>cellFactories.DatePickerTableCell</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/farmdb"/>
       <property name="javax.persistence.jdbc.user" value="pablo"/>
