@@ -3,13 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package userInterfaceTier;
+package ui;
 
+import DTO.AnimalBean;
+import DTO.SpeciesBean;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
+import ui.controller.AnimalController;
+import businessLogic.animal.AnimalManagerFactory;
+import businessLogic.species.SpeciesManagerFactory;
 
 /**
  * The main application class responsible for initializing and displaying the Sign In window.
@@ -33,15 +42,26 @@ public class Application extends javafx.application.Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("SignIn.fxml"));
+
+        Parent root = FXMLLoader.load(getClass().getResource("view/SignIn.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        stage.setScene(scene);
+        scene.getStylesheets().add(getClass().getResource("view/styles.css").toExternalForm());
         stage.getIcons().add(new Image("resources/logo.png"));
+        stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Sign In");
+        stage.setTitle("Sign in");
         stage.show();
+
+//      Parent root = FXMLLoader.load(getClass().getResource("view/Animal.fxml"));
+//        
+//        Scene scene = new Scene(root);
+//        scene.getStylesheets().add(getClass().getResource("view/styles.css").toExternalForm());
+//        stage.setScene(scene);
+//        stage.setResizable(false);
+//        stage.setTitle("Animals");
+//        stage.show();
+        
     }
 
     /**
@@ -53,6 +73,8 @@ public class Application extends javafx.application.Application {
      */
     public static void main(String[] args) {
         launch(args);
+        
+        
     }
     
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="35.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="ui.controller.MenuController">
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>      
+    <MenuBar fx:id="menuBar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="36.0" prefWidth="1024.0">
+        <menus>
+            <Menu mnemonicParsing="false" text="Navigate to">
+                <items>
+                    <MenuItem fx:id="miAnimal" mnemonicParsing="false" text="Animals" />
+                    <MenuItem fx:id="miAnimalGroup" mnemonicParsing="false" text="Animal Groups" />
+                    <MenuItem fx:id="miConsume" mnemonicParsing="false" text="Consumes" />
+                    <MenuItem fx:id="miProduct" mnemonicParsing="false" text="Products" />
+                    <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem fx:id="miLogOut" mnemonicParsing="false" text="Log out" />
+                </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Report">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="Print" />
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+</AnchorPane>

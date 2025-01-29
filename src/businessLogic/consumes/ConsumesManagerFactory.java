@@ -4,8 +4,7 @@
  * and open the template in the editor.
  */
 
-package userLogicTier;
-import userLogicTier.ConsumesRestClient;
+package businessLogic.consumes;
 /**
  *
  * @author Pablo

@@ -7,6 +7,7 @@ package ui.controller;
 
 import DTO.AnimalBean;
 import DTO.AnimalGroupBean;
+import DTO.ManagerBean;
 import DTO.SpeciesBean;
 import ui.cellFactories.DatePickerTableCell;
 import java.net.URL;
@@ -52,15 +53,15 @@ import javax.ws.rs.core.GenericType;
 import businessLogic.animalGroup.AnimalGroupFactory;
 import businessLogic.animal.AnimalManagerFactory;
 import businessLogic.species.SpeciesManagerFactory;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.view.JasperViewer;
+//import net.sf.jasperreports.engine.JRException;
+//import net.sf.jasperreports.engine.JasperCompileManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperReport;
+//import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+//import net.sf.jasperreports.view.JasperViewer;
 import java.util.Collection;
 import java.util.Map;
-import net.sf.jasperreports.engine.JasperPrint;
+//import net.sf.jasperreports.engine.JasperPrint;
 
 
 /**
@@ -128,16 +129,32 @@ public class AnimalController implements Initializable {
     @FXML
     private HBox hboxDatePicker;
     
-    private String managerId;
+    private static ManagerBean manager;
+    
+    public static void setManager(ManagerBean manager) {
+        AnimalController.manager = manager;
+    }
 
+    public static ManagerBean getManager() {
+        return manager;
+    }
+    
+    private static AnimalGroupBean conditionalAnimalGroup;
+
+    public static AnimalGroupBean getConditionalAnimalGroup() {
+        return conditionalAnimalGroup;
+    }
+
+    public static void setConditionalAnimalGroup(AnimalGroupBean conditionalAnimalGroup) {
+        AnimalController.conditionalAnimalGroup = conditionalAnimalGroup;
+    }
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) { 
-        // recibir por parametro
-        managerId = "1";
-       
+     
         
         tbAnimal.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     //        // Establecer el título de la ventana
@@ -158,6 +175,7 @@ public class AnimalController implements Initializable {
     //        dpSearchFrom.setVisible(false);
     //        dpSearchTo.setVisible(false);
 
+    tfSearch.setText("");
             // Cargar los elementos en el combo de búsqueda
             comboSearch.getItems().addAll("Subespecies", "Animal Group", "Birthdate");
     //
@@ -209,7 +227,8 @@ public class AnimalController implements Initializable {
 
             tcAnimalGroup.setCellValueFactory(new PropertyValueFactory<>("animalGroup"));
             List<AnimalGroupBean> animalGroupList = new ArrayList<AnimalGroupBean>();
-            animalGroupList = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, managerId);             
+            animalGroupList = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, String.valueOf(manager.getId())); 
+          
             ObservableList<AnimalGroupBean> animalGroupData = FXCollections.observableArrayList(animalGroupList);
             tcAnimalGroup.setCellFactory(ComboBoxTableCell.forTableColumn(animalGroupData));
             tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "animalGroup"));
@@ -238,9 +257,16 @@ public class AnimalController implements Initializable {
             tbAnimal.setEditable(true);
             //        stage.show(); 
             
-            showAllAnimals();
+//            showAllAnimals();
             
-            btnPrint.setOnAction(this::handlePrintAction); 
+//            if (this.conditionalAnimalGroup != null) {
+//                tfSearch.setText(conditionalAnimalGroup.getName());
+//                btnSearch.fire();
+//            } else{
+//                showAllAnimals();
+//            }
+//            
+//            btnPrint.setOnAction(this::handlePrintAction); 
     }
     
     private void handleComboBoxChange(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -446,7 +472,7 @@ public class AnimalController implements Initializable {
         // Lógica para asignar AnimalGroup o Subespecie según el filtro
         if ("Animal Group".equals(filterType)) {
             if (filterValue != null && !filterValue.isEmpty()) {
-                AnimalGroupBean choiceAnimalGroup = AnimalGroupFactory.get().getAnimalGroupByName(new GenericType<AnimalGroupBean>() {}, filterValue, managerId);
+                AnimalGroupBean choiceAnimalGroup = AnimalGroupFactory.get().getAnimalGroupByName(new GenericType<AnimalGroupBean>() {}, filterValue, String.valueOf(manager.getId()));
                 // internal server error si no hay coincidencias, tratarlo y darle un defaultAnimalGroup
 
                 if (choiceAnimalGroup != null) {
@@ -482,7 +508,6 @@ public class AnimalController implements Initializable {
         for (int row = 0; row < tbAnimal.getItems().size(); row++) {
             AnimalBean animal = tbAnimal.getItems().get(row);
             if (animal.getName().equals("New Animal")) {                
-//                tbAnimal.edit(row, tcName);
                 NEW_ANIMAL_ROW=row;
                 Platform.runLater(() -> tbAnimal.edit(NEW_ANIMAL_ROW, tcName));
                 tbAnimal.refresh();
@@ -493,7 +518,7 @@ public class AnimalController implements Initializable {
     
     private void setDefaultAnimalGroup(AnimalBean newAnimal){
         List<AnimalGroupBean> availableAnimalGroups = new ArrayList<AnimalGroupBean>();
-        availableAnimalGroups = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, managerId);
+        availableAnimalGroups = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, String.valueOf(manager.getId()));
         
         if (availableAnimalGroups != null && !availableAnimalGroups.isEmpty()) {
             newAnimal.setAnimalGroup(availableAnimalGroups.get(0));
@@ -505,7 +530,7 @@ public class AnimalController implements Initializable {
     
     private void showAllAnimals() {
         try {
-            List<AnimalBean> allAnimals = AnimalManagerFactory.get().getAllAnimals(new GenericType<List<AnimalBean>>() {}, managerId);
+            List<AnimalBean> allAnimals = AnimalManagerFactory.get().getAllAnimals(new GenericType<List<AnimalBean>>() {}, String.valueOf(manager.getId()));
                     
             if (allAnimals != null && !allAnimals.isEmpty()) {
                 ObservableList<AnimalBean> animalData = FXCollections.observableArrayList(allAnimals);
@@ -522,32 +547,32 @@ public class AnimalController implements Initializable {
         }
     }
     
-    private void handlePrintAction(ActionEvent event){
-        try {
-            logger.info("Beginning printing action...");
-           
-            JasperReport report=
-                JasperCompileManager.compileReport(getClass()
-                    .getResourceAsStream("/ui/reports/animalReport.jrxml"));
-            //Data for the report: a collection of UserBean passed as a JRDataSource 
-            //implementation 
-            JRBeanCollectionDataSource dataItems=
-                    new JRBeanCollectionDataSource((Collection<AnimalBean>)this.tbAnimal.getItems());
-            //Map of parameter to be passed to the report
-            Map<String,Object> parameters=new HashMap<>();
-            //Fill report with data
-            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
-            //Create and show the report window. The second parameter false value makes 
-            //report window not to close app.
-            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
-            jasperViewer.setVisible(true);
-           // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        } catch (JRException ex) {
+//    private void handlePrintAction(ActionEvent event){
+//        try {
+//            logger.info("Beginning printing action...");
+//           
+//            JasperReport report=
+//                JasperCompileManager.compileReport(getClass()
+//                    .getResourceAsStream("/ui/reports/animalReport.jrxml"));
+//            //Data for the report: a collection of UserBean passed as a JRDataSource 
+//            //implementation 
+//            JRBeanCollectionDataSource dataItems=
+//                    new JRBeanCollectionDataSource((Collection<AnimalBean>)this.tbAnimal.getItems());
+//            //Map of parameter to be passed to the report
+//            Map<String,Object> parameters=new HashMap<>();
+//            //Fill report with data
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+//            //Create and show the report window. The second parameter false value makes 
+//            //report window not to close app.
+//            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+//            jasperViewer.setVisible(true);
+//           // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+//        } catch (JRException ex) {
             //If there is an error show message and
             //log it.
 //            showErrorAlert("Error al imprimir:\n"+
 //                            ex.getMessage());
             
-        }
-    }
+//        }
+//    }
 }

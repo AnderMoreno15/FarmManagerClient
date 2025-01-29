@@ -1,12 +1,13 @@
-package userInterfaceTier;
+package ui.controller;
 
 import DTO.ConsumesBean;
 import DTO.ProductBean;
 import DTO.AnimalGroupBean;
+import businessLogic.animalGroup.AnimalGroupFactory;
 import cellFactories.DatePickerTableCell;
 import java.net.URL;
 import java.util.ArrayList;
-import userLogicTier.ConsumesRestClient;
+import businessLogic.consumes.ConsumesRestClient;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Optional;
@@ -35,7 +36,8 @@ import javafx.util.StringConverter;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import ui.controller.AnimalController;
-import userLogicTier.ConsumesManagerFactory;
+import businessLogic.consumes.ConsumesManagerFactory;
+import businessLogic.product.ProductManagerFactory;
 
 /**
  * Controller for the Consumes window management.
@@ -159,7 +161,7 @@ public class ConsumesController {
         tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
         List<ProductBean> productList = new ArrayList<ProductBean>();
         
-        productList = ProductFactory.get().getAnimalProduct(new GenericType<List<ProductBean>>() {});  
+        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
         ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
         tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
         
@@ -480,7 +482,7 @@ public class ConsumesController {
                 for (ConsumesBean selectedConsume : selectedConsumes) {
                     try {
                         System.out.println(selectedConsume.toString());
-                        ConsumesManagerFactory.get().deleteConsume((selectedConsume.getConsumesId()));
+                        ConsumesManagerFactory.get().deleteConsume(String.valueOf(selectedConsume.getConsumesId()));
                         successfullyDeleted.add(selectedConsume);
                 
                     } catch (WebApplicationException e) {

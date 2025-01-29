@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14323c4c-8ec4-4c03-8e17-7a593b20c972">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+        <field name="name" class="java.lang.String"/>
+	<field name="birthdate" class="java.util.Date"/>
+	<field name="animalGroup.name" class="java.lang.String"/>
+	<field name="subespecies" class="java.lang.String"/>
+	<field name="species.name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="203" y="43" width="228" height="36" uuid="b1f5576a-a2bd-4235-a1f2-afc249d891b4"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[ANIMAL REPORT ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="31" y="41" width="100" height="20" uuid="883c8b5a-fac3-4499-a35f-2d1270586067"/>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="131" y="41" width="100" height="20" uuid="930cb2f0-c4b3-4071-8e8f-44783567e947"/>
+				<text><![CDATA[Birthdate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="231" y="41" width="100" height="20" uuid="d22dc91b-c320-49df-84ea-806db3a54f6a"/>
+				<text><![CDATA[Animal Group]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="331" y="41" width="100" height="20" uuid="adaafe83-b1e2-4bf2-a084-f2f5778e1a0c"/>
+				<text><![CDATA[Subespecies]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="41" width="100" height="20" uuid="dab0c8a8-b567-4cfb-a61b-d0feb927ae4c"/>
+				<text><![CDATA[Subespecies]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="31" y="0" width="100" height="20" uuid="a101e59f-90ed-4a89-a21e-6589d439c676"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="131" y="0" width="100" height="20" uuid="d0c151af-bfaa-4d8f-9232-d847b5186191"/>
+				<textFieldExpression><![CDATA[$F{birthdate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="231" y="0" width="100" height="20" uuid="074444a5-01a7-416f-b3ea-2171e21dfcc3"/>
+				<textFieldExpression><![CDATA[$F{animalGroup.name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="331" y="0" width="100" height="20" uuid="a8dd7b5c-feba-4d69-bbfb-5026abcc0c2c"/>
+				<textFieldExpression><![CDATA[$F{subespecies}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="0" width="100" height="20" uuid="66ded51a-92f9-4b92-8f66-ccba625e720a"/>
+				<textFieldExpression><![CDATA[$F{species.name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
