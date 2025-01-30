@@ -43,11 +43,11 @@ public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("view/SignIn.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/ui/view/Consumes.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("view/styles.css").toExternalForm());
-        stage.getIcons().add(new Image("resources/logo.png"));
+        scene.getStylesheets().add(getClass().getResource("/ui/view/styles.css").toExternalForm());
+        stage.getIcons().add(new Image("/resources/logo.png"));
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Sign in");

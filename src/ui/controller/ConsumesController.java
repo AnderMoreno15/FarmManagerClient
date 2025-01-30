@@ -37,13 +37,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import ui.controller.AnimalController;
 import businessLogic.consumes.ConsumesManagerFactory;
+import businessLogic.consumes.IConsumesManager;
 import businessLogic.product.ProductManagerFactory;
+import java.io.File;
+import javafx.fxml.Initializable;
 
 /**
  * Controller for the Consumes window management.
  * @author YourName
  */
-public class ConsumesController {
+public class ConsumesController implements Initializable{
     
     @FXML
     private TableView<ConsumesBean> tableConsumes;
@@ -92,6 +95,11 @@ public class ConsumesController {
            //Initialize RestClient
             consumesClient = new ConsumesRestClient();
             managerId = "1";
+            
+//            String css = getClass().getResource("/ui/view/styles.css").toExternalForm();
+//            searchField.getScene().getStylesheets().add(css);
+            
+           
             // Initialize UI components
             initializeComponents();
             
@@ -111,7 +119,7 @@ public class ConsumesController {
             
             LOGGER.info("Consumes window initialized.");
         } catch (Exception e) {
-            String errorMsg = "Error initializing window: " + e.getMessage();
+            String errorMsg = "Error initializing window: " + e;
             showErrorAlert(errorMsg);
             LOGGER.log(Level.SEVERE, errorMsg);
         }
@@ -538,12 +546,39 @@ public class ConsumesController {
             ButtonType.OK);
         alert.showAndWait();
     }
+//private void debugResources() {
+//    System.out.println("Buscando recursos...");
+//    
+//    // Verificar FXML
+//    String fxmlPath = "/ui/view/Consumes.fxml";
+//    URL fxmlUrl = getClass().getResource(fxmlPath);
+//    System.out.println("FXML URL: " + fxmlUrl);
+//    
+//    // Verificar CSS
+//    String cssPath = "/ui/view/styles.css";
+//    URL cssUrl = getClass().getResource(cssPath);
+//    System.out.println("CSS URL: " + cssUrl);
+//    
+//    // Listar recursos en el directorio
+//    try {
+//        URL dirUrl = getClass().getResource("/ui/view");
+//        if (dirUrl != null) {
+//            File dir = new File(dirUrl.toURI());
+//            System.out.println("Contenido del directorio view:");
+//            for (File file : dir.listFiles()) {
+//                System.out.println(" - " + file.getName());
+//            }
+//        }
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//    }
+//}
 
     /**
      * Sets the stage for this controller.
      * @param stage The stage to set.
      */
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+//    public void setStage(Stage stage) {
+//        this.stage = stage;
+//    }
 }
