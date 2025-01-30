@@ -367,9 +367,15 @@ public class ConsumesController implements Initializable{
     private void updateSearchFieldPrompt(String searchType) {
         switch (searchType) {
             case "Product":
+                dpSearchFrom.setVisible(false);
+                dpSearchTo.setVisible(false);
+                searchField.setVisible(true);  
                 searchField.setPromptText("Enter product name");
                 break;
             case "Animal Group":
+                dpSearchFrom.setVisible(false);
+                dpSearchTo.setVisible(false);
+                searchField.setVisible(true);  
                 searchField.setPromptText("Enter animal group name");
                 break;
             case "Date":
