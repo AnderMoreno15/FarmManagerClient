@@ -65,8 +65,8 @@ public class ConsumesController implements Initializable{
     private Button btnSearch;
     @FXML
     private Button btnAdd;
-    @FXML
-    private Button btnPrint;
+//    @FXML
+//    private Button btnPrint;
     @FXML
     private MenuItem itemDelete;
     @FXML
@@ -119,7 +119,6 @@ public class ConsumesController implements Initializable{
             setupEventHandlers();
 
             // Load initial data
-            showAllConsumes();
             
             //Mostrar Todos los Consumos
             showAllConsumes();
@@ -128,11 +127,19 @@ public class ConsumesController implements Initializable{
             
             LOGGER.info("Consumes window initialized.");
         } catch (Exception e) {
-            String errorMsg = "Error initializing window: " + e;
-            showErrorAlert(errorMsg);
-            LOGGER.log(Level.SEVERE, errorMsg);
-        }
+    // Obtener la traza de pila como un array de StackTraceElement
+    StackTraceElement[] stackTraceElements = e.getStackTrace();
+
+    // Convertir la traza de pila en una cadena de texto legible
+    StringBuilder traceBuilder = new StringBuilder();
+    for (StackTraceElement element : stackTraceElements) {
+        traceBuilder.append(element.toString()).append("\n");
     }
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error initializing window: \n" + traceBuilder.toString();
+    System.err.println(errorMsg); // O usar un logger si prefieres
+}}
 
     /**
      * Initializes window components.
@@ -184,82 +191,7 @@ public class ConsumesController implements Initializable{
      * Initializes the table and its columns antes de chat gpt ponga los logs
      */
     
-    // Faltaria importar las factorias de animal group y de product y el cellfactory
-//    private void initializeTable() {
-//        
-//        // Set up column AnimalGroup
-//        tcAnimalGroup.setCellValueFactory(new PropertyValueFactory<>("animalGroup"));
-//        List<AnimalGroupBean> animalGroupList = new ArrayList<AnimalGroupBean>();
-//        
-//        animalGroupList = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, managerId);  
-//        ObservableList<AnimalGroupBean> animalGroupData = FXCollections.observableArrayList(animalGroupList);
-//        tcAnimalGroup.setCellFactory(ComboBoxTableCell.forTableColumn(animalGroupData));
-//        
-//        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "animalGroup"));
-//        
-//        //Set up column Products
-//        tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
-//        List<ProductBean> productList = new ArrayList<ProductBean>();
-//        
-//        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
-//        ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
-//        tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
-//        
-//        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "product"));
-//        
-//        //Initialize column consume amount
-//        tcConsumeAmount.setCellValueFactory(new PropertyValueFactory<>("consumeAmount"));
-//
-//        tcConsumeAmount.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Float>() {
-//   
-//         public String toString(Float value) {
-//         return value != null ? value.toString() : "";
-//         }
-//
-//         public Float fromString(String string) {
-//          try {
-//            return Float.parseFloat(string);
-//        } catch (NumberFormatException e) {
-//            return 0.0f; // Default value in case of invalid input
-//        }
-//        }
-//        }));
-//       
-//      // Configurar la columna 'consumeAmount' para manejar commits de edición
-//        tcConsumeAmount.setOnEditCommit(event -> handleEditCommit(event, "consumeAmount"));
-//
-//      // Configurar la columna 'date' con un CellValueFactory y un CellFactory personalizado
-//        tcDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-//
-//      // Configurar el CellFactory para la columna 'date'
-//        tcDate.setCellFactory(new Callback<TableColumn<ConsumesBean, Date>, TableCell<ConsumesBean, Date>>() {
-//    @Override
-//    public TableCell<ConsumesBean, Date> call(TableColumn<ConsumesBean, Date> param) {
-//        // Crear una celda personalizada con DatePicker
-//        DatePickerTableCell<ConsumesBean> cell = new DatePickerTableCell<>(param);
-//        cell.updateDateCallback = (Date updatedDate) -> {
-//            try {
-//                updateConsumeDate(updatedDate);
-//            } catch (CloneNotSupportedException ex) {
-//                Logger.getLogger(ConsumesController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        };
-//        return cell;
-//    }
-//     });
-//
-//     // Aplicar un estilo centrado a la columna 'date'
-//       tcDate.setStyle("-fx-alignment: center;");
-//
-//        
-//
-//        // Set up selection listener
-//        tableConsumes.getSelectionModel().selectedItemProperty().addListener(
-//            (obs, oldVal, newVal) -> {
-//                boolean hasSelection = newVal != null;
-//                itemDelete.setDisable(!hasSelection);
-//            });
-//    }
+
   private void initializeTable() {
     // Set up column AnimalGroup
     try {
@@ -287,13 +219,13 @@ public class ConsumesController implements Initializable{
         LOGGER.info("Setting up Product column...");
         tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
         
-        List<ProductBean> productList = new ArrayList<ProductBean>();
-        LOGGER.info("Fetching products...");
-        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
-        
-        ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
-        LOGGER.info("Products fetched, setting up ComboBox cell...");
-        tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
+//        List<ProductBean> productList = new ArrayList<ProductBean>();
+//        LOGGER.info("Fetching products...");
+//        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
+//        
+//        ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
+//        LOGGER.info("Products fetched, setting up ComboBox cell...");
+//        tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
         
         tcProduct.setOnEditCommit(event -> {
             LOGGER.info("Product edit committed: " + event.getNewValue());
@@ -360,7 +292,7 @@ public class ConsumesController implements Initializable{
         LOGGER.log(Level.SEVERE, "Error setting up Date column", e);
     }
 
-    // Set up selection listener
+//     Set up selection listener
     LOGGER.info("Setting up selection listener for table...");
     tableConsumes.getSelectionModel().selectedItemProperty().addListener(
         (obs, oldVal, newVal) -> {
@@ -368,6 +300,8 @@ public class ConsumesController implements Initializable{
             itemDelete.setDisable(!hasSelection);
             LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
         });
+  
+
 }
 
 
@@ -375,15 +309,49 @@ public class ConsumesController implements Initializable{
     /**
      * Sets up event handlers for UI components.
      */
-    private void setupEventHandlers() {
-        btnSearch.setOnAction(this::handleSearchAction);
-        btnAdd.setOnAction(this::handleCreateAction);
-        comboSearch.setOnAction(this::handleComboSearchAction);
-        itemDelete.setDisable(true);
-            tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
-                itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
-            });
-    }
+//    private void setupEventHandlers() {
+//        btnSearch.setOnAction(this::handleSearchAction);
+//        btnAdd.setOnAction(this::handleCreateAction);
+//        comboSearch.setOnAction(this::handleComboSearchAction);
+//        itemDelete.setDisable(true);
+//            tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
+//                itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
+//            });
+//    }
+  private void setupEventHandlers() {
+    // Log para la acción de búsqueda
+    LOGGER.info("Setting up search button action...");
+    btnSearch.setOnAction(event -> {
+        LOGGER.info("Search button clicked");
+        handleSearchAction(event);
+    });
+
+    // Log para la acción de añadir
+    LOGGER.info("Setting up add button action...");
+    btnAdd.setOnAction(event -> {
+        LOGGER.info("Add button clicked");
+        handleCreateAction(event);
+    });
+
+    // Log para la acción del combo de búsqueda
+    LOGGER.info("Setting up combo box action...");
+    comboSearch.setOnAction(event -> {
+        LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
+        handleComboSearchAction(event);
+    });
+
+    // Desactivar el botón de eliminar por defecto
+    itemDelete.setDisable(true);
+    LOGGER.info("Delete button disabled by default.");
+
+    // Listener para la selección en la tabla
+    tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
+        LOGGER.info("Selection changed in table. Number of selected items: " + tableConsumes.getSelectionModel().getSelectedItems().size());
+        itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
+        LOGGER.info("Delete button " + (tableConsumes.getSelectionModel().getSelectedItems().isEmpty() ? "disabled" : "enabled"));
+    });
+}
+
 
     /**
      * Handles changes in the search combo box selection.
@@ -567,57 +535,8 @@ public class ConsumesController implements Initializable{
         }
          btnSearch.fire();
     } 
-//        String filterType = comboSearch.getValue();
-//        String filterValue = searchField.getText();
-//
-//        // Lógica para asignar AnimalGroup o Subespecie según el filtro
-//        if ("Animal Group".equals(filterType)) {
-//            if (filterValue != null && !filterValue.isEmpty()) {
-//                AnimalGroupBean choiceAnimalGroup = AnimalGroupFactory.get().getAnimalGroupByName(new GenericType<AnimalGroupBean>() {}, filterValue, managerId);
-//                // internal server error si no hay coincidencias, tratarlo y darle un defaultAnimalGroup
-//
-//                if (choiceAnimalGroup != null) {
-//                    newAnimal.setAnimalGroup(choiceAnimalGroup);
-//                } else {
-//                    setDefaultAnimalGroup(newAnimal);
-//                }
-//            }
-//        } else if ("Subespecies".equals(filterType)) {
-//            if (filterValue != null && !filterValue.isEmpty()) {
-//                // Asignar la subespecie basada en el filtro
-//                newAnimal.setSubespecies(filterValue);
-//                setDefaultAnimalGroup(newAnimal);
-//            }
-//        }
 
-//        List<SpeciesBean> availableSpecies = new ArrayList<SpeciesBean>();
-//        availableSpecies = SpeciesManagerFactory.get().getAllSpecies(new GenericType<List<SpeciesBean>>() {});
-//       
-//        if (availableSpecies != null && !availableSpecies.isEmpty()) {
-//            newAnimal.setSpecies(availableSpecies.get(0));
-//        } else {
-//            System.out.println("No se encontraron especies");
-        
-       
-       
-        
-        //lanzar accion btnSearch
-       
-
-        //poner en modo edicion la casilla que contenga en la columna name "New Animal"
-//        final int NEW_ANIMAL_ROW;
-//        for (int row = 0; row < tbAnimal.getItems().size(); row++) {
-//            AnimalBean animal = tbAnimal.getItems().get(row);
-//            if (animal.getName().equals("New Animal")) {                
-////                tbAnimal.edit(row, tcName);
-//                NEW_ANIMAL_ROW=row;
-//                Platform.runLater(() -> tbAnimal.edit(NEW_ANIMAL_ROW, tcName));
-//                tbAnimal.refresh();
-//                break;
-//            }
-//        }
-//            LOGGER.info("New consume created successfully.");
-//         
+      
 
     /**
      * Handles the delete action.
@@ -659,25 +578,49 @@ public class ConsumesController implements Initializable{
 
     /**
      * Loads table data from server.
-     */
-    private void showAllConsumes() {
-        try {
-            List<ConsumesBean> allConsumes = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
-                    
-            if (allConsumes != null && !allConsumes.isEmpty()) {
-                ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(allConsumes);
-                tableConsumes.setItems(consumesData);
-                btnAdd.setDisable(false);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No tiene consumos asociados", ButtonType.OK);
-                alert.showAndWait();
-            }
-                    
-        } catch (WebApplicationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error al cargar los consumos: " + e.getMessage(), ButtonType.OK);
+//     */
+//    private void showAllConsumes() {
+//        try {
+//            List<ConsumesBean> allConsumes = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
+//                    
+//            if (allConsumes != null && !allConsumes.isEmpty()) {
+//                ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(allConsumes);
+//                tableConsumes.setItems(consumesData);
+//                btnAdd.setDisable(false);
+//            } else {
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No tiene consumos asociados", ButtonType.OK);
+//                alert.showAndWait();
+//            }
+//                    
+//        } catch (WebApplicationException e) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR, "Error al cargar los consumos: " + e.getMessage(), ButtonType.OK);
+//            alert.showAndWait();
+//        }
+//    }
+private void showAllConsumes() {
+    try {
+        LOGGER.info("Fetching all consumes...");
+        List<ConsumesBean> allConsumes = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
+        
+        // Comprobación de si se obtuvieron consumos
+        if (allConsumes != null && !allConsumes.isEmpty()) {
+            LOGGER.info("Consumes fetched successfully. Total items: " + allConsumes.size());
+            ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(allConsumes);
+            tableConsumes.setItems(consumesData);
+            btnAdd.setDisable(false);
+            LOGGER.info("Table updated with consumes data. Add button enabled.");
+        } else {
+            LOGGER.info("No consumes found.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No tiene consumos asociados", ButtonType.OK);
             alert.showAndWait();
         }
+        
+    } catch (WebApplicationException e) {
+        LOGGER.severe("Error occurred while fetching consumes: " + e.getMessage());
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Error al cargar los consumos: " + e.getMessage(), ButtonType.OK);
+        alert.showAndWait();
     }
+}
 
     /**
      * Shows error alert dialog.
@@ -689,33 +632,7 @@ public class ConsumesController implements Initializable{
             ButtonType.OK);
         alert.showAndWait();
     }
-//private void debugResources() {
-//    System.out.println("Buscando recursos...");
-//    
-//    // Verificar FXML
-//    String fxmlPath = "/ui/view/Consumes.fxml";
-//    URL fxmlUrl = getClass().getResource(fxmlPath);
-//    System.out.println("FXML URL: " + fxmlUrl);
-//    
-//    // Verificar CSS
-//    String cssPath = "/ui/view/styles.css";
-//    URL cssUrl = getClass().getResource(cssPath);
-//    System.out.println("CSS URL: " + cssUrl);
-//    
-//    // Listar recursos en el directorio
-//    try {
-//        URL dirUrl = getClass().getResource("/ui/view");
-//        if (dirUrl != null) {
-//            File dir = new File(dirUrl.toURI());
-//            System.out.println("Contenido del directorio view:");
-//            for (File file : dir.listFiles()) {
-//                System.out.println(" - " + file.getName());
-//            }
-//        }
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
-//}
+
 
     /**
      * Sets the stage for this controller.
