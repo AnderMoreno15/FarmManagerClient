@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1024.0" styleClass="styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controller.ConsumesController">
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1024.0" styleClass="styles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controller.ConsumesController">
     <stylesheets>
         <URL value="@styles.css" />
     </stylesheets>
@@ -42,27 +42,32 @@
             <Button id="btnAdd" fx:id="btnCreate" prefHeight="26.0" prefWidth="135.0" text="Add" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <TableView id="tableConsumes" fx:id="tableAnimalGroup" prefHeight="550.0" prefWidth="984.0" GridPane.columnSpan="6" GridPane.rowIndex="1">
                <columns>
-                  <TableColumn id="tcAnimalGroup" fx:id="columnDescription" prefWidth="300.0" resizable="false" text="Animal Group" />
-                  <TableColumn id="tcProduct" fx:id="columnName" prefWidth="250.0" resizable="false" text="Product" />
-                  <TableColumn id="tcConsumeAmount" fx:id="columnConsume" prefWidth="200.0" resizable="false" text="Consume (kg)" />
-                  <TableColumn id="tcDate" fx:id="columnDate" prefWidth="250.0" resizable="false" text="Date" />
+                  <TableColumn fx:id="tcAnimalGroup" prefWidth="300.0" resizable="false" text="Animal Group" />
+                  <TableColumn  fx:id="tcProduct" prefWidth="250.0" resizable="false" text="Product" />
+                  <TableColumn fx:id="tcConsumeAmount" prefWidth="200.0" resizable="false" text="Consume (kg)" />
+                  <TableColumn  fx:id="tcDate" prefWidth="250.0" resizable="false" text="Date" />
                </columns>
                <contextMenu>
                   <ContextMenu>
                      <items>
-                        <MenuItem fx:id="itemOpen" mnemonicParsing="false" text="Open" />
                         <MenuItem fx:id="itemDelete" mnemonicParsing="false" text="Delete" />
                      </items>
                   </ContextMenu>
-               </contextMenu>           
+               </contextMenu>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </TableView>
             <Separator prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="2" />
             <TextField id="searchField" fx:id="searchField" promptText="Insert animal group name" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
             </TextField>
-            <Button id="btnSearch" fx:id="btnSearch" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Search" GridPane.columnIndex="3" GridPane.valignment="CENTER" />
-            <ComboBox id="comboSearch" prefWidth="150.0" />
-            <DatePicker id="dpSearchFrom" prefHeight="23.0" prefWidth="137.0" promptText="From" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-            <DatePicker id="dpSearchTo" promptText="To" GridPane.columnIndex="2" />
+            <Button  fx:id="btnSearch" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Search" GridPane.columnIndex="3" GridPane.valignment="CENTER" />
+            <ComboBox fx:id="comboSearch" prefWidth="150.0" />
+            <DatePicker fx:id="dpSearchFrom" prefHeight="23.0" prefWidth="137.0" promptText="From" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+            <DatePicker fx:id="dpSearchTo" promptText="To" GridPane.columnIndex="2" />
          </children>
       </GridPane>
       <MenuBar layoutX="-1.0" prefHeight="36.0" prefWidth="1035.0">

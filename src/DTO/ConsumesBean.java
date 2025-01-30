@@ -108,7 +108,7 @@ public class ConsumesBean implements Serializable, Cloneable{
 
     @Override
     public String toString() {
-        return "entities.Consumes[ consume=" + consumeAmount + " ]";
+        return "entities.Consumes[ consumeId=" + consumesId + " consumeamount "+ consumeAmount + " ]";
     }
     
 }

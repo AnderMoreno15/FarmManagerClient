@@ -41,13 +41,14 @@ import businessLogic.consumes.IConsumesManager;
 import businessLogic.product.ProductManagerFactory;
 import java.io.File;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller for the Consumes window management.
  * @author YourName
  */
 public class ConsumesController implements Initializable{
-    
+   
     @FXML
     private TableView<ConsumesBean> tableConsumes;
     @FXML
@@ -76,6 +77,8 @@ public class ConsumesController implements Initializable{
     private ComboBox<String> comboSearch;
     @FXML
     private HBox hboxDatePicker;
+    @FXML
+    private StackPane stack;
     
     private String managerId;
    // private static ManagerBean manager;
@@ -91,14 +94,20 @@ public class ConsumesController implements Initializable{
      * @param root The FXML document graph.
      */
      public void initialize(URL url, ResourceBundle rb) { 
-        try {
+       
            //Initialize RestClient
+           try{
             consumesClient = new ConsumesRestClient();
             managerId = "1";
+             } catch (Exception e) {
+            String errorMsg = "Error initializing Rest: " + e + consumesClient;
+            showErrorAlert(errorMsg);
+            LOGGER.log(Level.SEVERE, errorMsg);
+        }
             
 //            String css = getClass().getResource("/ui/view/styles.css").toExternalForm();
 //            searchField.getScene().getStylesheets().add(css);
-            
+            try { 
            
             // Initialize UI components
             initializeComponents();
@@ -128,106 +137,240 @@ public class ConsumesController implements Initializable{
     /**
      * Initializes window components.
      */
-    private void initializeComponents() {
-        // Initialize ComboBox
-        comboSearch.getItems().addAll(
-           "Animal Group","Product", "Date");
-        comboSearch.setValue("Product");
-        comboSearch.setEditable(false);
-        // Initialize search field
-        searchField.setPromptText("Enter search text");
+  private void initializeComponents() {
+    try {
+        LOGGER.info("Initializing ComboBox...");
+        comboSearch.getItems().addAll("Animal Group", "Product", "Date");
         comboSearch.setValue("Animal Group");
+        comboSearch.setEditable(false);
+        LOGGER.info("ComboBox initialized successfully.");
+
+        // Initialize search field
+        LOGGER.info("Initializing search field...");
+        searchField.setPromptText("Enter search text");
+        LOGGER.info("Search field initialized successfully.");
+
+        // Set ComboBox value
+        LOGGER.info("Setting ComboBox value...");
+        comboSearch.setValue("Animal Group");
+        LOGGER.info("ComboBox value set to 'Animal Group'.");
+
         // Initialize buttons
+        LOGGER.info("Initializing buttons...");
         btnSearch.setDisable(false);
         btnSearch.setDefaultButton(true);
+        LOGGER.info("Buttons initialized successfully.");
+
         // Initialize menu items
+        LOGGER.info("Initializing menu items...");
         itemDelete.setDisable(true);
+        LOGGER.info("Menu items initialized successfully.");
+
         // Hide the elements
+        LOGGER.info("Hiding date pickers...");
         dpSearchFrom.setVisible(false);
         dpSearchTo.setVisible(false);
+        LOGGER.info("Date pickers hidden successfully.");
         
+    } catch (Exception e) {
+        String errorMsg = "Error initializing components: " + e;
+        showErrorAlert(errorMsg);
+        LOGGER.log(Level.SEVERE, errorMsg);
     }
+}
+
 
     /**
-     * Initializes the table and its columns.
+     * Initializes the table and its columns antes de chat gpt ponga los logs
      */
     
     // Faltaria importar las factorias de animal group y de product y el cellfactory
-    private void initializeTable() {
-        
-        // Set up column AnimalGroup
+//    private void initializeTable() {
+//        
+//        // Set up column AnimalGroup
+//        tcAnimalGroup.setCellValueFactory(new PropertyValueFactory<>("animalGroup"));
+//        List<AnimalGroupBean> animalGroupList = new ArrayList<AnimalGroupBean>();
+//        
+//        animalGroupList = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, managerId);  
+//        ObservableList<AnimalGroupBean> animalGroupData = FXCollections.observableArrayList(animalGroupList);
+//        tcAnimalGroup.setCellFactory(ComboBoxTableCell.forTableColumn(animalGroupData));
+//        
+//        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "animalGroup"));
+//        
+//        //Set up column Products
+//        tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
+//        List<ProductBean> productList = new ArrayList<ProductBean>();
+//        
+//        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
+//        ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
+//        tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
+//        
+//        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "product"));
+//        
+//        //Initialize column consume amount
+//        tcConsumeAmount.setCellValueFactory(new PropertyValueFactory<>("consumeAmount"));
+//
+//        tcConsumeAmount.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Float>() {
+//   
+//         public String toString(Float value) {
+//         return value != null ? value.toString() : "";
+//         }
+//
+//         public Float fromString(String string) {
+//          try {
+//            return Float.parseFloat(string);
+//        } catch (NumberFormatException e) {
+//            return 0.0f; // Default value in case of invalid input
+//        }
+//        }
+//        }));
+//       
+//      // Configurar la columna 'consumeAmount' para manejar commits de edición
+//        tcConsumeAmount.setOnEditCommit(event -> handleEditCommit(event, "consumeAmount"));
+//
+//      // Configurar la columna 'date' con un CellValueFactory y un CellFactory personalizado
+//        tcDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+//
+//      // Configurar el CellFactory para la columna 'date'
+//        tcDate.setCellFactory(new Callback<TableColumn<ConsumesBean, Date>, TableCell<ConsumesBean, Date>>() {
+//    @Override
+//    public TableCell<ConsumesBean, Date> call(TableColumn<ConsumesBean, Date> param) {
+//        // Crear una celda personalizada con DatePicker
+//        DatePickerTableCell<ConsumesBean> cell = new DatePickerTableCell<>(param);
+//        cell.updateDateCallback = (Date updatedDate) -> {
+//            try {
+//                updateConsumeDate(updatedDate);
+//            } catch (CloneNotSupportedException ex) {
+//                Logger.getLogger(ConsumesController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        };
+//        return cell;
+//    }
+//     });
+//
+//     // Aplicar un estilo centrado a la columna 'date'
+//       tcDate.setStyle("-fx-alignment: center;");
+//
+//        
+//
+//        // Set up selection listener
+//        tableConsumes.getSelectionModel().selectedItemProperty().addListener(
+//            (obs, oldVal, newVal) -> {
+//                boolean hasSelection = newVal != null;
+//                itemDelete.setDisable(!hasSelection);
+//            });
+//    }
+  private void initializeTable() {
+    // Set up column AnimalGroup
+    try {
+        LOGGER.info("Setting up AnimalGroup column...");
         tcAnimalGroup.setCellValueFactory(new PropertyValueFactory<>("animalGroup"));
-        List<AnimalGroupBean> animalGroupList = new ArrayList<AnimalGroupBean>();
         
+        List<AnimalGroupBean> animalGroupList = new ArrayList<AnimalGroupBean>();
+        LOGGER.info("Fetching animal groups for manager...");
         animalGroupList = AnimalGroupFactory.get().getAnimalGroupsByManager(new GenericType<List<AnimalGroupBean>>() {}, managerId);  
+        
         ObservableList<AnimalGroupBean> animalGroupData = FXCollections.observableArrayList(animalGroupList);
+        LOGGER.info("Animal groups fetched, setting up ComboBox cell...");
         tcAnimalGroup.setCellFactory(ComboBoxTableCell.forTableColumn(animalGroupData));
         
-        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "animalGroup"));
-        
-        //Set up column Products
+        tcAnimalGroup.setOnEditCommit(event -> {
+            LOGGER.info("AnimalGroup edit committed: " + event.getNewValue());
+            handleEditCommit(event, "animalGroup");
+        });
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Error setting up AnimalGroup column", e);
+    }
+
+    // Set up column Products
+    try {
+        LOGGER.info("Setting up Product column...");
         tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
-        List<ProductBean> productList = new ArrayList<ProductBean>();
         
+        List<ProductBean> productList = new ArrayList<ProductBean>();
+        LOGGER.info("Fetching products...");
         productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
+        
         ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
+        LOGGER.info("Products fetched, setting up ComboBox cell...");
         tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
         
-        tcAnimalGroup.setOnEditCommit(event -> handleEditCommit(event, "product"));
-        
-        //Initialize column consume amount
+        tcProduct.setOnEditCommit(event -> {
+            LOGGER.info("Product edit committed: " + event.getNewValue());
+            handleEditCommit(event, "product");
+        });
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Error setting up Product column", e);
+    }
+
+    // Initialize column consume amount
+    try {
+        LOGGER.info("Setting up ConsumeAmount column...");
         tcConsumeAmount.setCellValueFactory(new PropertyValueFactory<>("consumeAmount"));
-
+        
         tcConsumeAmount.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Float>() {
-   
-         public String toString(Float value) {
-         return value != null ? value.toString() : "";
-         }
+            public String toString(Float value) {
+                return value != null ? value.toString() : "";
+            }
 
-         public Float fromString(String string) {
-          try {
-            return Float.parseFloat(string);
-        } catch (NumberFormatException e) {
-            return 0.0f; // Default value in case of invalid input
-        }
-        }
+            public Float fromString(String string) {
+                try {
+                    return Float.parseFloat(string);
+                } catch (NumberFormatException e) {
+                    LOGGER.log(Level.WARNING, "Invalid input for consume amount: " + string, e);
+                    return 0.0f; // Default value in case of invalid input
+                }
+            }
         }));
-       
-      // Configurar la columna 'consumeAmount' para manejar commits de edición
-        tcConsumeAmount.setOnEditCommit(event -> handleEditCommit(event, "consumeAmount"));
 
-      // Configurar la columna 'date' con un CellValueFactory y un CellFactory personalizado
+        tcConsumeAmount.setOnEditCommit(event -> {
+            LOGGER.info("ConsumeAmount edit committed: " + event.getNewValue());
+            handleEditCommit(event, "consumeAmount");
+        });
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Error setting up ConsumeAmount column", e);
+    }
+
+    // Configurar la columna 'date' con un CellValueFactory y un CellFactory personalizado
+    try {
+        LOGGER.info("Setting up Date column...");
         tcDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-      // Configurar el CellFactory para la columna 'date'
+        // Configurar el CellFactory para la columna 'date'
         tcDate.setCellFactory(new Callback<TableColumn<ConsumesBean, Date>, TableCell<ConsumesBean, Date>>() {
-    @Override
-    public TableCell<ConsumesBean, Date> call(TableColumn<ConsumesBean, Date> param) {
-        // Crear una celda personalizada con DatePicker
-        DatePickerTableCell<ConsumesBean> cell = new DatePickerTableCell<>(param);
-        cell.updateDateCallback = (Date updatedDate) -> {
-            try {
-                updateConsumeDate(updatedDate);
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(ConsumesController.class.getName()).log(Level.SEVERE, null, ex);
+            @Override
+            public TableCell<ConsumesBean, Date> call(TableColumn<ConsumesBean, Date> param) {
+                LOGGER.info("Creating custom DatePicker table cell...");
+                DatePickerTableCell<ConsumesBean> cell = new DatePickerTableCell<>(param);
+                cell.updateDateCallback = (Date updatedDate) -> {
+                    try {
+                        LOGGER.info("Updating consume date: " + updatedDate);
+                        updateConsumeDate(updatedDate);
+                    } catch (CloneNotSupportedException ex) {
+                        LOGGER.log(Level.SEVERE, "Error updating consume date", ex);
+                    }
+                };
+                return cell;
             }
-        };
-        return cell;
+        });
+
+        tcDate.setStyle("-fx-alignment: center;");
+        LOGGER.info("Date column setup complete.");
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Error setting up Date column", e);
     }
-     });
 
-     // Aplicar un estilo centrado a la columna 'date'
-       tcDate.setStyle("-fx-alignment: center;");
+    // Set up selection listener
+    LOGGER.info("Setting up selection listener for table...");
+    tableConsumes.getSelectionModel().selectedItemProperty().addListener(
+        (obs, oldVal, newVal) -> {
+            boolean hasSelection = newVal != null;
+            itemDelete.setDisable(!hasSelection);
+            LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
+        });
+}
 
-        
 
-        // Set up selection listener
-        tableConsumes.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldVal, newVal) -> {
-                boolean hasSelection = newVal != null;
-                itemDelete.setDisable(!hasSelection);
-            });
-    }
 
     /**
      * Sets up event handlers for UI components.
