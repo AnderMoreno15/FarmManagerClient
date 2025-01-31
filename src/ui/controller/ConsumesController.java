@@ -42,6 +42,7 @@ import businessLogic.product.ProductManagerFactory;
 import java.io.File;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.StackPane;
+import javax.ws.rs.ClientErrorException;
 
 /**
  * Controller for the Consumes window management.
@@ -301,7 +302,7 @@ public class ConsumesController implements Initializable{
             LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
         });
   
-
+   tableConsumes.setEditable(true);
 }
 
 
@@ -309,48 +310,58 @@ public class ConsumesController implements Initializable{
     /**
      * Sets up event handlers for UI components.
      */
-//    private void setupEventHandlers() {
-//        btnSearch.setOnAction(this::handleSearchAction);
-//        btnAdd.setOnAction(this::handleCreateAction);
-//        comboSearch.setOnAction(this::handleComboSearchAction);
-//        itemDelete.setDisable(true);
-//            tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
-//                itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
-//            });
-//    }
-  private void setupEventHandlers() {
-    // Log para la acción de búsqueda
-    LOGGER.info("Setting up search button action...");
-    btnSearch.setOnAction(event -> {
-        LOGGER.info("Search button clicked");
-        handleSearchAction(event);
-    });
-
-    // Log para la acción de añadir
-    LOGGER.info("Setting up add button action...");
-    btnAdd.setOnAction(event -> {
-        LOGGER.info("Add button clicked");
-        handleCreateAction(event);
-    });
-
-    // Log para la acción del combo de búsqueda
-    LOGGER.info("Setting up combo box action...");
-    comboSearch.setOnAction(event -> {
-        LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
-        handleComboSearchAction(event);
-    });
-
-    // Desactivar el botón de eliminar por defecto
-    itemDelete.setDisable(true);
-    LOGGER.info("Delete button disabled by default.");
-
-    // Listener para la selección en la tabla
-    tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
-        LOGGER.info("Selection changed in table. Number of selected items: " + tableConsumes.getSelectionModel().getSelectedItems().size());
-        itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
-        LOGGER.info("Delete button " + (tableConsumes.getSelectionModel().getSelectedItems().isEmpty() ? "disabled" : "enabled"));
-    });
-}
+    private void setupEventHandlers() {
+  LOGGER.info("Setting up search button action...");
+        btnSearch.setOnAction(this::handleSearchAction);
+   LOGGER.info("Search button clicked");
+   LOGGER.info("Setting up add button action...");
+        btnAdd.setOnAction(this::handleCreateAction);
+   LOGGER.info("Add button clicked");
+   LOGGER.info("Setting up combo box action...");
+   LOGGER.info("Setting up combo box action...");
+        comboSearch.setOnAction(this::handleComboSearchAction);
+   LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
+   LOGGER.info("Setting up Delete item.");
+        itemDelete.setDisable(false);
+            tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
+                itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
+   LOGGER.info("Item delete launched.");
+            });
+            
+    }
+//  private void setupEventHandlers() {
+//    // Log para la acción de búsqueda
+//    LOGGER.info("Setting up search button action...");
+//    btnSearch.setOnAction(event -> {
+//        LOGGER.info("Search button clicked");
+//        handleSearchAction(event);
+//    });
+//
+//    // Log para la acción de añadir
+//    LOGGER.info("Setting up add button action...");
+//    btnAdd.setOnAction(event -> {
+//        LOGGER.info("Add button clicked");
+//        handleCreateAction(event);
+//    });
+//
+//    // Log para la acción del combo de búsqueda
+//    LOGGER.info("Setting up combo box action...");
+//    comboSearch.setOnAction(event -> {
+//        LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
+//        handleComboSearchAction(event);
+//    });
+//
+//    // Desactivar el botón de eliminar por defecto
+//    itemDelete.setDisable(true);
+//    LOGGER.info("Delete button disabled by default.");
+//
+//    // Listener para la selección en la tabla
+//    tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
+//        LOGGER.info("Selection changed in table. Number of selected items: " + tableConsumes.getSelectionModel().getSelectedItems().size());
+//        itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
+//        LOGGER.info("Delete button " + (tableConsumes.getSelectionModel().getSelectedItems().isEmpty() ? "disabled" : "enabled"));
+//    });
+//}
 
 
     /**
@@ -389,67 +400,88 @@ public class ConsumesController implements Initializable{
     /**
      * Handles the search action.
      */
-    private void handleSearchAction(ActionEvent event) {
-        try {
-            LOGGER.info("Handling search action.");
-            String searchText = searchField.getText().trim();
-            String searchType = comboSearch.getValue();
-            List<ConsumesBean> consumesList;
-                consumesList = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
+private void handleSearchAction(ActionEvent event) {
+    try {
+        LOGGER.info("Handling search action.");
 
-            if(searchField.getText() != null && !searchField.getText().isEmpty()){
-               
-              } else {
-                  switch (searchType) {
-                    case "Product":
-                      String nameProduct=searchField.getText();
-                      consumesList = ConsumesManagerFactory.get().findConsumesByProduct(new GenericType<List<ConsumesBean>>() {},nameProduct);
-;
-                        break;
-                    case "Animal Group": //Como el de abajo pues todooosssss
-                        String nameAnimalGroup=searchField.getText();
-                        consumesList = ConsumesManagerFactory.get().findConsumesByAnimalGroup(new GenericType<List<ConsumesBean>>() {},nameAnimalGroup);
+        // Obtienes el texto de búsqueda y el tipo de búsqueda seleccionado
+        String searchText = searchField.getText().trim();
+        String searchType = comboSearch.getValue();
 
-                        break;
-                    case "Date":
-                        
-                    String from = (dpSearchFrom.getValue() != null && !dpSearchFrom.getValue().toString().isEmpty())? dpSearchFrom.getValue().toString(): null;
-                     String to = (dpSearchTo.getValue() != null && !dpSearchTo.getValue().toString().isEmpty())? dpSearchTo.getValue().toString(): null;
+        // Lista de resultados
+        List<ConsumesBean> consumesList = null;
 
-                      if (from != null && to != null) {
-                      consumesList = ConsumesManagerFactory.get().getConsumesByDate(new GenericType<List<ConsumesBean>>() {},from, to);
-                      } else if (from != null) {
-                      consumesList = ConsumesManagerFactory.get().getConsumesByDateFrom(new GenericType<List<ConsumesBean>>() {},from);
-                      } else if (to != null) {consumesList = ConsumesManagerFactory.get().getConsumesByDateTo(new GenericType<List<ConsumesBean>>() {}, to);
-                       } else {
-                         showAllConsumes(); // Método para mostrar todos los consumos, equivalente a showAllAnimals().
-                       }
-                     break;
+        // Si el campo de búsqueda no está vacío
+        if (!searchText.isEmpty()) {
+            switch (searchType) {
+                case "Product":
+                    // Buscar por producto
+                    consumesList = ConsumesManagerFactory.get().findConsumesByProduct(new GenericType<List<ConsumesBean>>() {}, searchText);
+                    break;
 
-                    default:
-                        consumesList = consumesClient.getAllConsumes(new GenericType<List<ConsumesBean>>() {});
-             
-                }
-                  
+                case "Animal Group":
+                    // Buscar por grupo animal
+                    consumesList = ConsumesManagerFactory.get().findConsumesByAnimalGroup(new GenericType<List<ConsumesBean>>() {}, searchText);
+                    break;
+
+                case "Date":
+                    // Buscar por fecha
+                    String from = (dpSearchFrom.getValue() != null && !dpSearchFrom.getValue().toString().isEmpty()) ? dpSearchFrom.getValue().toString() : null;
+                    String to = (dpSearchTo.getValue() != null && !dpSearchTo.getValue().toString().isEmpty()) ? dpSearchTo.getValue().toString() : null;
+
+                    if (from != null && to != null) {
+                        consumesList = ConsumesManagerFactory.get().getConsumesByDate(new GenericType<List<ConsumesBean>>() {}, from, to);
+                    } else if (from != null) {
+                        consumesList = ConsumesManagerFactory.get().getConsumesByDateFrom(new GenericType<List<ConsumesBean>>() {}, from);
+                    } else if (to != null) {
+                        consumesList = ConsumesManagerFactory.get().getConsumesByDateTo(new GenericType<List<ConsumesBean>>() {}, to);
+                    } else {
+                        showAllConsumes(); // Método para mostrar todos los consumos, equivalente a showAllAnimals().
+                    }
+                    break;
+
+                default:
+                    LOGGER.warning("Tipo de búsqueda no reconocido.");
+                    consumesList = consumesClient.getAllConsumes(new GenericType<List<ConsumesBean>>() {});
+                    break;
             }
-             if (!consumesList.isEmpty()) {
-                ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(consumesList);
-                tableConsumes.setItems(consumesData);
-                btnAdd.setDisable(false);
-             }
-
-            tableConsumes.setItems(FXCollections.observableArrayList(consumesList));
-            LOGGER.info("Search completed successfully.");
-
-        } catch (WebApplicationException e) {
-            String errorMsg = "Error performing search: " + e.getMessage();
-//            showErrorAlert(errorMsg);
-            LOGGER.log(Level.SEVERE, errorMsg);
+        } else {
+            // Si el campo de búsqueda está vacío, obtienes todos los consumos
+            consumesList = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
         }
-        
-        
-               
+
+        // Si la lista no está vacía, muestra los consumos encontrados
+        if (consumesList != null && !consumesList.isEmpty()) {
+            ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(consumesList);
+            tableConsumes.setItems(consumesData);
+            btnAdd.setDisable(false); // Habilita el botón si hay resultados
+            LOGGER.info("Search completed successfully.");
+        } else {
+            System.out.println("No se encontraron consumos para la búsqueda.");
+        }
+
+    } catch (Exception e) {
+        // Manejo de excepciones generales
+        handleException(e);
     }
+}
+
+// Método para manejar excepciones y mostrar el stack trace
+private void handleException(Exception e) {
+    // Obtener la traza de pila como un array de StackTraceElement
+    StackTraceElement[] stackTraceElements = e.getStackTrace();
+
+    // Convertir la traza de pila en una cadena de texto legible
+    StringBuilder traceBuilder = new StringBuilder();
+    for (StackTraceElement element : stackTraceElements) {
+        traceBuilder.append(element.toString()).append("\n");
+    }
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error in search Action Handler: \n" + traceBuilder.toString();
+    System.err.println(errorMsg); // O usar un logger si prefieres
+}
+
         
     
     
@@ -558,7 +590,7 @@ public class ConsumesController implements Initializable{
                 for (ConsumesBean selectedConsume : selectedConsumes) {
                     try {
                         System.out.println(selectedConsume.toString());
-                        ConsumesManagerFactory.get().deleteConsume(String.valueOf(selectedConsume.getConsumesId()));
+                        ConsumesManagerFactory.get().deleteConsume(selectedConsume);
                         successfullyDeleted.add(selectedConsume);
                 
                     } catch (WebApplicationException e) {

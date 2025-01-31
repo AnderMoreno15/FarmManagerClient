@@ -60,9 +60,9 @@ public class ConsumesRestClient implements IConsumesManager {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
    @Override
-    public <T> T findConsumesByAnimalGroup(GenericType<T> responseType, String animalGroupId) throws ClientErrorException {
+    public <T> T findConsumesByAnimalGroup(GenericType<T> responseType, String animalGroupName) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("AnimalGroup/{0}", new Object[]{animalGroupId}));
+        resource = resource.path(java.text.MessageFormat.format("AnimalGroup/{0}", new Object[]{animalGroupName}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
    @Override
@@ -71,10 +71,19 @@ public class ConsumesRestClient implements IConsumesManager {
         resource = resource.path(java.text.MessageFormat.format("Hasta/{0}", new Object[]{to}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-   @Override
-    public void deleteConsume(String consumesId) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("Delete/{0}", new Object[]{consumesId})).request().delete();
+  @Override
+public void deleteConsume(Object requestEntity) throws ClientErrorException {
+    Response response = webTarget
+        .path("Delete")
+        .request(MediaType.APPLICATION_XML)
+        .method("DELETE", Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+
+    if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
+        throw new ClientErrorException("Failed to delete consume: " + response.getStatus(), response.getStatus());
     }
+}
+
+
    @Override
     public <T> T getAllConsumes(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
@@ -168,5 +177,30 @@ public class ConsumesRestClient implements IConsumesManager {
 //            e.printStackTrace();
 //        }
 //  }
-    
+//          Probando get by animal name
+
+    public static void main(String[] args) {
+   ConsumesRestClient client = new ConsumesRestClient();
+        try {
+            String animalGroupName = "North Cows"; // Ajusta el ID según tu base de datos
+
+            System.out.println("Consultando consumos para el grupo de animales con nombre: " + animalGroupName);
+            
+            // Realiza la petición
+            List<ConsumesBean> consumesList = ConsumesManagerFactory.get()
+                .findConsumesByAnimalGroup(new GenericType<List<ConsumesBean>>() {}, animalGroupName);
+            
+            // Muestra la respuesta
+            System.out.println("Lista de Consumos para el Grupo " + animalGroupName + ": " + consumesList);
+
+        } catch (ClientErrorException e) {
+            System.err.println("Error en la petición REST: " + e.getResponse().getStatus());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            client.close();
+        }
+    }
 }
