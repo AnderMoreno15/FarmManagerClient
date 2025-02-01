@@ -71,17 +71,19 @@ public class ConsumesRestClient implements IConsumesManager {
         resource = resource.path(java.text.MessageFormat.format("Hasta/{0}", new Object[]{to}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-  @Override
-public void deleteConsume(Object requestEntity) throws ClientErrorException {
+ @Override
+public void deleteConsume(String consumesId) throws ClientErrorException {
     Response response = webTarget
-        .path("Delete")
-        .request(MediaType.APPLICATION_XML)
-        .method("DELETE", Entity.entity(requestEntity, MediaType.APPLICATION_XML));
+        .path("{id}")  // Sin "Delete"
+        .resolveTemplate("id", consumesId)
+        .request()
+        .delete();
 
     if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
         throw new ClientErrorException("Failed to delete consume: " + response.getStatus(), response.getStatus());
     }
 }
+
 
 
    @Override

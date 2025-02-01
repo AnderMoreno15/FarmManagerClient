@@ -3,6 +3,7 @@ package ui.controller;
 import DTO.ConsumesBean;
 import DTO.ProductBean;
 import DTO.AnimalGroupBean;
+import DTO.ConsumesIdBean;
 import businessLogic.animalGroup.AnimalGroupFactory;
 import cellFactories.DatePickerTableCell;
 import java.net.URL;
@@ -40,6 +41,7 @@ import businessLogic.consumes.ConsumesManagerFactory;
 import businessLogic.consumes.IConsumesManager;
 import businessLogic.product.ProductManagerFactory;
 import java.io.File;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.StackPane;
 import javax.ws.rs.ClientErrorException;
@@ -99,7 +101,7 @@ public class ConsumesController implements Initializable{
            //Initialize RestClient
            try{
             consumesClient = new ConsumesRestClient();
-            managerId = "1";
+            managerId = "2";
              } catch (Exception e) {
             String errorMsg = "Error initializing Rest: " + e + consumesClient;
             showErrorAlert(errorMsg);
@@ -194,7 +196,8 @@ public class ConsumesController implements Initializable{
     
 
   private void initializeTable() {
-    // Set up column AnimalGroup
+    // Set up column AnimalGroupç
+    tableConsumes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     try {
         LOGGER.info("Setting up AnimalGroup column...");
         tcAnimalGroup.setCellValueFactory(new PropertyValueFactory<>("animalGroup"));
@@ -211,30 +214,27 @@ public class ConsumesController implements Initializable{
             LOGGER.info("AnimalGroup edit committed: " + event.getNewValue());
             handleEditCommit(event, "animalGroup");
         });
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Error setting up AnimalGroup column", e);
-    }
+           } catch (Exception e) {
+
+    String errorMsg = "Error initialing animal group column: \n";  handleException(e);;
+    System.err.println(errorMsg); // O usar un logger si prefieres
+   }
 
     // Set up column Products
     try {
         LOGGER.info("Setting up Product column...");
-        tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
-        
-//        List<ProductBean> productList = new ArrayList<ProductBean>();
-//        LOGGER.info("Fetching products...");
-//        productList = ProductManagerFactory.get().getAllProducts(new GenericType<List<ProductBean>>() {});  
-//        
-//        ObservableList<ProductBean> productData = FXCollections.observableArrayList(productList);
-//        LOGGER.info("Products fetched, setting up ComboBox cell...");
-//        tcProduct.setCellFactory(ComboBoxTableCell.forTableColumn(productData));
-        
+        tcProduct.setCellValueFactory(new PropertyValueFactory<>("product"));    
         tcProduct.setOnEditCommit(event -> {
             LOGGER.info("Product edit committed: " + event.getNewValue());
             handleEditCommit(event, "product");
         });
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Error setting up Product column", e);
-    }
+           } catch (Exception e) {
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error setting up product column: \n" ;
+    handleException(e);
+    System.err.println(errorMsg); // O usar un logger si prefieres
+   }
 
     // Initialize column consume amount
     try {
@@ -260,9 +260,13 @@ public class ConsumesController implements Initializable{
             LOGGER.info("ConsumeAmount edit committed: " + event.getNewValue());
             handleEditCommit(event, "consumeAmount");
         });
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Error setting up ConsumeAmount column", e);
-    }
+           } catch (Exception e) {
+  
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error Setting up consume column: \n" ;  handleException(e);
+    System.err.println(errorMsg); // O usar un logger si prefieres
+}
 
     // Configurar la columna 'date' con un CellValueFactory y un CellFactory personalizado
     try {
@@ -281,6 +285,8 @@ public class ConsumesController implements Initializable{
                         updateConsumeDate(updatedDate);
                     } catch (CloneNotSupportedException ex) {
                         LOGGER.log(Level.SEVERE, "Error updating consume date", ex);
+                        
+                        Logger.getLogger(AnimalController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 };
                 return cell;
@@ -289,24 +295,17 @@ public class ConsumesController implements Initializable{
 
         tcDate.setStyle("-fx-alignment: center;");
         LOGGER.info("Date column setup complete.");
-    } catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Error setting up Date column", e);
-    }
+           } catch (Exception e) {
 
-//     Set up selection listener
-    LOGGER.info("Setting up selection listener for table...");
-    tableConsumes.getSelectionModel().selectedItemProperty().addListener(
-        (obs, oldVal, newVal) -> {
-            boolean hasSelection = newVal != null;
-            itemDelete.setDisable(!hasSelection);
-            LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
-        });
-  
-   tableConsumes.setEditable(true);
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error setting up date column: \n";
+    handleException(e);
+    System.err.println(errorMsg); // O usar un logger si prefieres
 }
 
 
-
+  }
     /**
      * Sets up event handlers for UI components.
      */
@@ -323,46 +322,23 @@ public class ConsumesController implements Initializable{
    LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
    LOGGER.info("Setting up Delete item.");
         itemDelete.setDisable(false);
+        itemDelete.setOnAction(this::handleDeleteAction);
             tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
                 itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
    LOGGER.info("Item delete launched.");
             });
+        //     Set up selection listener
+    LOGGER.info("Setting up selection listener for table...");
+    tableConsumes.getSelectionModel().selectedItemProperty().addListener(
+        (obs, oldVal, newVal) -> {
+            boolean hasSelection = newVal != null;
+            itemDelete.setDisable(!hasSelection);
+            LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
+        });
+  
+   tableConsumes.setEditable(true);
             
     }
-//  private void setupEventHandlers() {
-//    // Log para la acción de búsqueda
-//    LOGGER.info("Setting up search button action...");
-//    btnSearch.setOnAction(event -> {
-//        LOGGER.info("Search button clicked");
-//        handleSearchAction(event);
-//    });
-//
-//    // Log para la acción de añadir
-//    LOGGER.info("Setting up add button action...");
-//    btnAdd.setOnAction(event -> {
-//        LOGGER.info("Add button clicked");
-//        handleCreateAction(event);
-//    });
-//
-//    // Log para la acción del combo de búsqueda
-//    LOGGER.info("Setting up combo box action...");
-//    comboSearch.setOnAction(event -> {
-//        LOGGER.info("Search combo box selection changed to: " + comboSearch.getValue());
-//        handleComboSearchAction(event);
-//    });
-//
-//    // Desactivar el botón de eliminar por defecto
-//    itemDelete.setDisable(true);
-//    LOGGER.info("Delete button disabled by default.");
-//
-//    // Listener para la selección en la tabla
-//    tableConsumes.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ConsumesBean>) change -> {
-//        LOGGER.info("Selection changed in table. Number of selected items: " + tableConsumes.getSelectionModel().getSelectedItems().size());
-//        itemDelete.setDisable(tableConsumes.getSelectionModel().getSelectedItems().isEmpty());
-//        LOGGER.info("Delete button " + (tableConsumes.getSelectionModel().getSelectedItems().isEmpty() ? "disabled" : "enabled"));
-//    });
-//}
-
 
     /**
      * Handles changes in the search combo box selection.
@@ -466,27 +442,17 @@ private void handleSearchAction(ActionEvent event) {
     }
 }
 
-// Método para manejar excepciones y mostrar el stack trace
-private void handleException(Exception e) {
-    // Obtener la traza de pila como un array de StackTraceElement
-    StackTraceElement[] stackTraceElements = e.getStackTrace();
-
-    // Convertir la traza de pila en una cadena de texto legible
-    StringBuilder traceBuilder = new StringBuilder();
-    for (StackTraceElement element : stackTraceElements) {
-        traceBuilder.append(element.toString()).append("\n");
-    }
-
-    // Mostrar el error con la traza de pila
-    String errorMsg = "Error in search Action Handler: \n" + traceBuilder.toString();
-    System.err.println(errorMsg); // O usar un logger si prefieres
-}
-
-        
-    
-    
     private <T> void handleEditCommit(TableColumn.CellEditEvent<ConsumesBean, T> event, String fieldName) {
         try {
+            
+            //     Set up selection listener
+    LOGGER.info("Setting up selection listener for table...");
+    tableConsumes.getSelectionModel().selectedItemProperty().addListener(
+        (obs, oldVal, newVal) -> {
+            boolean hasSelection = newVal != null;
+            itemDelete.setDisable(!hasSelection);
+            LOGGER.info("Selection changed: " + (hasSelection ? "Item selected" : "No item selected"));
+        });
             TablePosition<ConsumesBean, T> pos = event.getTablePosition();
             T newValue = event.getNewValue();
 
@@ -500,27 +466,30 @@ private void handleException(Exception e) {
 
             // actualiza en la capa lógica y también en el objeto original
             switch (fieldName) {
-                case "consumeAmount":
-                    if (newValue instanceof String) {
-                        consumeCopy.setConsumeAmount((Float) newValue);
-                        ConsumesManagerFactory.get().updateConsume(consumeCopy);
-                        consume.setConsumeAmount((Float) newValue);
-                    }
+               case "consumeAmount":
+                if (newValue instanceof Number) { // Asegura que sea un número
+                consumeCopy.setConsumeAmount(((Number) newValue).floatValue());
+                ConsumesManagerFactory.get().updateConsume(consumeCopy);
+                consume.setConsumeAmount(((Number) newValue).floatValue());
+                 }
                     break;
        
-                case "animalGroup":
-                    if (newValue instanceof ConsumesBean) {
-                        consumeCopy.setAnimalGroup((AnimalGroupBean) newValue);
-                        ConsumesManagerFactory.get().updateConsume(consumeCopy);
-                        consume.setAnimalGroup((AnimalGroupBean) newValue);
-                    }
-                case "product":
-                    if (newValue instanceof ConsumesBean) {
-                        consumeCopy.setProduct((ProductBean) newValue);
-                        ConsumesManagerFactory.get().updateConsume(consumeCopy);
-                        consume.setProduct((ProductBean) newValue);
-                    }
-                    break;
+               case "animalGroup":
+                 if (newValue instanceof AnimalGroupBean) {
+                 consumeCopy.setAnimalGroup((AnimalGroupBean) newValue);
+                 ConsumesManagerFactory.get().updateConsume(consumeCopy);
+                 consume.setAnimalGroup((AnimalGroupBean) newValue);
+    }
+    break;
+
+              case "product":
+              if (newValue instanceof ProductBean) {
+              consumeCopy.setProduct((ProductBean) newValue);
+              ConsumesManagerFactory.get().updateConsume(consumeCopy);
+              consume.setProduct((ProductBean) newValue);
+              }
+              break;
+
                 default:
                     throw new IllegalArgumentException("Campo desconocido: " + fieldName);
             }
@@ -531,6 +500,8 @@ private void handleException(Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             alert.showAndWait();
             event.consume();
+            handleException(e);
+            
         }
     }
     
@@ -574,67 +545,66 @@ private void handleException(Exception e) {
          btnSearch.fire();
     } 
 
-      
 
-    /**
-     * Handles the delete action.
-     */
-    private void handleDeleteAction(ActionEvent event) {
-           ObservableList<ConsumesBean> selectedConsumes = tableConsumes.getSelectionModel().getSelectedItems();
-        List<ConsumesBean> successfullyDeleted = new ArrayList<>();
 
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the selected consumes?", ButtonType.YES, ButtonType.NO);   
+private void handleDeleteAction(ActionEvent event) {
+    ObservableList<ConsumesBean> selectedConsumes = tableConsumes.getSelectionModel().getSelectedItems();
+    List<ConsumesBean> successfullyDeleted = new ArrayList<>();
+
+    if (selectedConsumes.isEmpty()) {
+        Platform.runLater(() -> {
+            Alert warningAlert = new Alert(Alert.AlertType.WARNING, "No consumes selected for deletion.", ButtonType.OK);
+            warningAlert.showAndWait();
+        });
+        return;
+    }
+
+    Platform.runLater(() -> {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, 
+            "Are you sure you want to delete the selected consumes?", 
+            ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> result = confirmationAlert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            try {
-                for (ConsumesBean selectedConsume : selectedConsumes) {
-                    try {
-                        System.out.println(selectedConsume.toString());
-                        ConsumesManagerFactory.get().deleteConsume(selectedConsume);
-                        successfullyDeleted.add(selectedConsume);
-                
-                    } catch (WebApplicationException e) {
-                        System.err.println("Error deleting animal: " + selectedConsume.getConsumesId() + " - " + e.getMessage());
-                    }
-                }
 
-                if (!successfullyDeleted.isEmpty()) {
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            for (ConsumesBean selectedConsume : selectedConsumes) {
+                try {
+                    // Supongamos que tienes un objeto ConsumesBean con un Long como ID
+                   ConsumesBean consume = selectedConsume; // El consumo seleccionado
+                   ConsumesIdBean consumeId = consume.getConsumesId(); // Obtienes el Long (ID)
+
+                   // Convierte el Long a String antes de enviarlo
+                      String consumeIdAsString = consumeId.toString();
+
+                  // Ahora puedes enviar el String como parte de la solicitud RESTful
+                consumesClient.deleteConsume(consumeIdAsString);
+                  // Ahora pasamos solo el ID
+                    successfullyDeleted.add(selectedConsume);
+                } catch (WebApplicationException e) {
+                    System.err.println("Error deleting consume ID " + selectedConsume.getConsumesId() + ": " + e.getMessage());
+                    handleException(e);
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR, 
+                            "Unexpected error during deletion: " + e.getMessage(), 
+                            ButtonType.OK);
+                        errorAlert.showAndWait();
+                    });
+                }
+            }
+
+            if (!successfullyDeleted.isEmpty()) {
+                Platform.runLater(() -> {
                     tableConsumes.getItems().removeAll(successfullyDeleted);
                     tableConsumes.getSelectionModel().clearSelection();
                     tableConsumes.refresh();
-                }
-
-            } catch (Exception e) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR, 
-                    "Unexpected error during deletion: " + e.getMessage(), 
-                    ButtonType.OK);
-                errorAlert.showAndWait();
+                });
             }
-        }     
-    }
+        }
+    });
+}
 
 
-    /**
-     * Loads table data from server.
-//     */
-//    private void showAllConsumes() {
-//        try {
-//            List<ConsumesBean> allConsumes = ConsumesManagerFactory.get().getAllConsumes(new GenericType<List<ConsumesBean>>() {});
-//                    
-//            if (allConsumes != null && !allConsumes.isEmpty()) {
-//                ObservableList<ConsumesBean> consumesData = FXCollections.observableArrayList(allConsumes);
-//                tableConsumes.setItems(consumesData);
-//                btnAdd.setDisable(false);
-//            } else {
-//                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No tiene consumos asociados", ButtonType.OK);
-//                alert.showAndWait();
-//            }
-//                    
-//        } catch (WebApplicationException e) {
-//            Alert alert = new Alert(Alert.AlertType.ERROR, "Error al cargar los consumos: " + e.getMessage(), ButtonType.OK);
-//            alert.showAndWait();
-//        }
-//    }
+
 private void showAllConsumes() {
     try {
         LOGGER.info("Fetching all consumes...");
@@ -671,6 +641,25 @@ private void showAllConsumes() {
         alert.showAndWait();
     }
 
+// Método para manejar excepciones y mostrar el stack trace
+private void handleException(Exception e) {
+    // Obtener la traza de pila como un array de StackTraceElement
+    StackTraceElement[] stackTraceElements = e.getStackTrace();
+
+    // Convertir la traza de pila en una cadena de texto legible
+    StringBuilder traceBuilder = new StringBuilder();
+    for (StackTraceElement element : stackTraceElements) {
+        traceBuilder.append(element.toString()).append("\n");
+    }
+
+    // Mostrar el error con la traza de pila
+    String errorMsg = "Error in search Action Handler: \n" + traceBuilder.toString();
+    System.err.println(errorMsg); // O usar un logger si prefieres
+}
+
+        
+    
+    
 
     /**
      * Sets the stage for this controller.
