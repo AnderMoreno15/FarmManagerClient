@@ -13,8 +13,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
@@ -45,7 +47,8 @@ public class ConsumesRestClient implements IConsumesManager {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("consumes");
     }
-      
+    
+        private static final Logger LOGGER = Logger.getLogger("logger");
  
   @Override
     public <T> T getConsumesByDateFrom(GenericType<T> responseType, String from) throws ClientErrorException {
@@ -71,20 +74,34 @@ public class ConsumesRestClient implements IConsumesManager {
         resource = resource.path(java.text.MessageFormat.format("Hasta/{0}", new Object[]{to}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
- @Override
-public void deleteConsume(String consumesId) throws ClientErrorException {
-    Response response = webTarget
-        .path("{id}")  // Sin "Delete"
-        .resolveTemplate("id", consumesId)
-        .request()
-        .delete();
+    @Override
+    public void deleteConsume(String productId, String animalGroupId) throws ClientErrorException  {
+        Client client = ClientBuilder.newClient(); // Crea un cliente RESTful
+        WebTarget target = client.target(BASE_URI).path("{productId}/{animalGroupId}")
+                                 .resolveTemplate("productId", productId)
+                                 .resolveTemplate("animalGroupId", animalGroupId);
 
-    if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
-        throw new ClientErrorException("Failed to delete consume: " + response.getStatus(), response.getStatus());
+        try {
+            // Enviamos la solicitud DELETE
+            Response response = target.request().delete();
+
+            // Comprobamos si la eliminación fue exitosa (código 204 No Content)
+            if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
+                System.out.println("Consume successfully deleted.");
+            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+                System.out.println("Consume not found.");
+            } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+                System.out.println("Invalid ID format.");
+            } else {
+                System.out.println("Error: " + response.getStatus());
+            }
+
+        } catch (ClientErrorException e) {
+            System.out.println("ClientErrorException: " + e.getResponse().getStatus());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
-}
-
-
 
    @Override
     public <T> T getAllConsumes(GenericType<T> responseType) throws ClientErrorException {

@@ -544,13 +544,11 @@ private void handleSearchAction(ActionEvent event) {
         }
          btnSearch.fire();
     } 
-
-
-
 private void handleDeleteAction(ActionEvent event) {
     ObservableList<ConsumesBean> selectedConsumes = tableConsumes.getSelectionModel().getSelectedItems();
     List<ConsumesBean> successfullyDeleted = new ArrayList<>();
 
+    // Si no se seleccionan consumos, mostramos una advertencia.
     if (selectedConsumes.isEmpty()) {
         Platform.runLater(() -> {
             Alert warningAlert = new Alert(Alert.AlertType.WARNING, "No consumes selected for deletion.", ButtonType.OK);
@@ -559,6 +557,7 @@ private void handleDeleteAction(ActionEvent event) {
         return;
     }
 
+    // Mostramos una alerta de confirmación.
     Platform.runLater(() -> {
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, 
             "Are you sure you want to delete the selected consumes?", 
@@ -568,21 +567,22 @@ private void handleDeleteAction(ActionEvent event) {
         if (result.isPresent() && result.get() == ButtonType.YES) {
             for (ConsumesBean selectedConsume : selectedConsumes) {
                 try {
-                    // Supongamos que tienes un objeto ConsumesBean con un Long como ID
-                   ConsumesBean consume = selectedConsume; // El consumo seleccionado
-                   ConsumesIdBean consumeId = consume.getConsumesId(); // Obtienes el Long (ID)
+                    // Se extraen los parámetros de la entidad ConsumesBean
+                    String productId = selectedConsume.getProduct().getId().toString();  // ID del Producto
+                    String animalGroupId = selectedConsume.getAnimalGroup().getId().toString();  // ID del Animal Group
 
-                   // Convierte el Long a String antes de enviarlo
-                      String consumeIdAsString = consumeId.toString();
+                    // Llamar al método deleteConsume con los parámetros correctos
+                    ConsumesRestClient client = new ConsumesRestClient();
+                    client.deleteConsume(productId, animalGroupId);  // Utiliza el método con los dos parámetros.
 
-                  // Ahora puedes enviar el String como parte de la solicitud RESTful
-                consumesClient.deleteConsume(consumeIdAsString);
-                  // Ahora pasamos solo el ID
+                    // Si la eliminación es exitosa, agregamos el consumo a la lista de eliminados
                     successfullyDeleted.add(selectedConsume);
+                    
                 } catch (WebApplicationException e) {
                     System.err.println("Error deleting consume ID " + selectedConsume.getConsumesId() + ": " + e.getMessage());
                     handleException(e);
                 } catch (Exception e) {
+                    // Si ocurre un error inesperado, mostramos una alerta en la interfaz
                     Platform.runLater(() -> {
                         Alert errorAlert = new Alert(Alert.AlertType.ERROR, 
                             "Unexpected error during deletion: " + e.getMessage(), 
@@ -592,6 +592,7 @@ private void handleDeleteAction(ActionEvent event) {
                 }
             }
 
+            // Si al menos un consumo fue eliminado exitosamente, actualizamos la interfaz
             if (!successfullyDeleted.isEmpty()) {
                 Platform.runLater(() -> {
                     tableConsumes.getItems().removeAll(successfullyDeleted);
@@ -602,8 +603,6 @@ private void handleDeleteAction(ActionEvent event) {
         }
     });
 }
-
-
 
 private void showAllConsumes() {
     try {
