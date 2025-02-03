@@ -527,23 +527,31 @@ private void handleSearchAction(ActionEvent event) {
      * Handles the create action.
      */
     private void handleCreateAction(ActionEvent event) {
-        
+    // Crear un nuevo objeto ConsumesBean con valores iniciales
+    ConsumesBean newConsume = new ConsumesBean();
+    newConsume.setProduct(null);  // Producto nulo
+    newConsume.setAnimalGroup(null);  // Grupo de animales nulo
+    newConsume.setConsumeAmount(0f);  // Cantidad inicial en 0
+    newConsume.setDate(new Date());  // Fecha actual
 
-        try {
-        ConsumesBean newConsume = new ConsumesBean();
-        //crear constructor por defecto
-        newConsume.setAnimalGroup(null);
-        newConsume.setProduct(null);
-        newConsume.setDate(new Date());
-        newConsume.setConsumeAmount(null);
+    // Crear el nuevo consumo en la base de datos
+    try {
         ConsumesManagerFactory.get().createConsume(newConsume);
-        } catch (WebApplicationException e) {
-            String errorMsg = "Error creating consume: " + e.getMessage();
-            showErrorAlert(errorMsg);
-            LOGGER.log(Level.SEVERE, errorMsg);
-        }
-         btnSearch.fire();
-    } 
+    } catch (WebApplicationException e) {
+        System.err.println("Error creating consume: " + e.getMessage());
+        handleException(e);
+        return;
+    }
+
+    // Agregar el nuevo consumo a la tabla
+    tableConsumes.getItems().add(newConsume);
+    tableConsumes.refresh();
+
+    // Poner en modo edición la casilla de la columna "Quantity" del nuevo consumo
+    final int NEW_CONSUME_ROW = tableConsumes.getItems().size() - 1; // Última fila añadida
+    Platform.runLater(() -> tableConsumes.edit(NEW_CONSUME_ROW, tcAnimalGroup));
+}
+
 private void handleDeleteAction(ActionEvent event) {
     ObservableList<ConsumesBean> selectedConsumes = tableConsumes.getSelectionModel().getSelectedItems();
     List<ConsumesBean> successfullyDeleted = new ArrayList<>();
@@ -571,16 +579,15 @@ private void handleDeleteAction(ActionEvent event) {
                     String productId = selectedConsume.getProduct().getId().toString();  // ID del Producto
                     String animalGroupId = selectedConsume.getAnimalGroup().getId().toString();  // ID del Animal Group
 
-                    // Llamar al método deleteConsume con los parámetros correctos
-                    ConsumesRestClient client = new ConsumesRestClient();
-                    client.deleteConsume(productId, animalGroupId);  // Utiliza el método con los dos parámetros.
+                    
+                    ConsumesManagerFactory.get().deleteConsume( productId, animalGroupId);
 
                     // Si la eliminación es exitosa, agregamos el consumo a la lista de eliminados
                     successfullyDeleted.add(selectedConsume);
                     
                 } catch (WebApplicationException e) {
                     System.err.println("Error deleting consume ID " + selectedConsume.getConsumesId() + ": " + e.getMessage());
-                    handleException(e);
+                    handleException(e);  // Manejo específico de la excepción (puedes agregar más detalles aquí)
                 } catch (Exception e) {
                     // Si ocurre un error inesperado, mostramos una alerta en la interfaz
                     Platform.runLater(() -> {
@@ -595,6 +602,7 @@ private void handleDeleteAction(ActionEvent event) {
             // Si al menos un consumo fue eliminado exitosamente, actualizamos la interfaz
             if (!successfullyDeleted.isEmpty()) {
                 Platform.runLater(() -> {
+                    // Actualizamos la tabla eliminando los elementos
                     tableConsumes.getItems().removeAll(successfullyDeleted);
                     tableConsumes.getSelectionModel().clearSelection();
                     tableConsumes.refresh();
@@ -603,6 +611,7 @@ private void handleDeleteAction(ActionEvent event) {
         }
     });
 }
+
 
 private void showAllConsumes() {
     try {

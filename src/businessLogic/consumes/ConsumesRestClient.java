@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -74,34 +75,42 @@ public class ConsumesRestClient implements IConsumesManager {
         resource = resource.path(java.text.MessageFormat.format("Hasta/{0}", new Object[]{to}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-    @Override
-    public void deleteConsume(String productId, String animalGroupId) throws ClientErrorException  {
-        Client client = ClientBuilder.newClient(); // Crea un cliente RESTful
-        WebTarget target = client.target(BASE_URI).path("{productId}/{animalGroupId}")
-                                 .resolveTemplate("productId", productId)
-                                 .resolveTemplate("animalGroupId", animalGroupId);
+   
+//    public void deleteConsume(String productId, String animalGroupId) throws ClientErrorException  {
+//        Client client = ClientBuilder.newClient(); // Crea un cliente RESTful
+//        WebTarget target = client.target(BASE_URI).path("Delete/{productId}/{animalGroupId}")
+//                                 .resolveTemplate("productId", productId)
+//                                 .resolveTemplate("animalGroupId", animalGroupId);
+//
+//        try {
+//            // Enviamos la solicitud DELETE
+//            Response response = target.request().delete();
+//
+//            // Comprobamos si la eliminación fue exitosa (código 204 No Content)
+//            if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
+//                System.out.println("Consume successfully deleted.");
+//            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+//                System.out.println("Consume not found.");
+//            } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+//                System.out.println("Invalid ID format.");
+//            } else {
+//                System.out.println("Error: " + response.getStatus());
+//            }
+//
+//        } catch (ClientErrorException e) {
+//            System.out.println("ClientErrorException: " + e.getResponse().getStatus());
+//        } catch (Exception e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
+//    }
+  @Override
+public Response deleteConsume(String productId, String animalGroupId) throws WebApplicationException {
+    return webTarget.path("Delete/" + productId + "/" + animalGroupId)
+                    .request(MediaType.APPLICATION_XML)
+                    .delete();
+}
 
-        try {
-            // Enviamos la solicitud DELETE
-            Response response = target.request().delete();
 
-            // Comprobamos si la eliminación fue exitosa (código 204 No Content)
-            if (response.getStatus() == Response.Status.NO_CONTENT.getStatusCode()) {
-                System.out.println("Consume successfully deleted.");
-            } else if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
-                System.out.println("Consume not found.");
-            } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-                System.out.println("Invalid ID format.");
-            } else {
-                System.out.println("Error: " + response.getStatus());
-            }
-
-        } catch (ClientErrorException e) {
-            System.out.println("ClientErrorException: " + e.getResponse().getStatus());
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
 
    @Override
     public <T> T getAllConsumes(GenericType<T> responseType) throws ClientErrorException {
