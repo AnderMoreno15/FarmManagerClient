@@ -4,6 +4,7 @@ import DTO.ConsumesBean;
 import DTO.ProductBean;
 import DTO.AnimalGroupBean;
 import DTO.ConsumesIdBean;
+import DTO.ManagerBean;
 import businessLogic.animalGroup.AnimalGroupFactory;
 import cellFactories.DatePickerTableCell;
 import java.net.URL;
@@ -109,15 +110,14 @@ public class ConsumesController implements Initializable{
            //Initialize RestClient
            try{
             consumesClient = new ConsumesRestClient();
-            managerId = "2";
+            ManagerBean manager = new ManagerBean();
+            managerId =String.valueOf(manager.getId());
              } catch (Exception e) {
             String errorMsg = "Error initializing Rest: " + e + consumesClient;
             showErrorAlert(errorMsg);
             LOGGER.log(Level.SEVERE, errorMsg);
         }
             
-//            String css = getClass().getResource("/ui/view/styles.css").toExternalForm();
-//            searchField.getScene().getStylesheets().add(css);
             try { 
            
             // Initialize UI components
