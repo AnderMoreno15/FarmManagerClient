@@ -41,10 +41,20 @@ import businessLogic.consumes.ConsumesManagerFactory;
 import businessLogic.consumes.IConsumesManager;
 import businessLogic.product.ProductManagerFactory;
 import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.StackPane;
 import javax.ws.rs.ClientErrorException;
+//import net.sf.jasperreports.engine.JRException;
+//import net.sf.jasperreports.engine.JasperCompileManager;
+//import net.sf.jasperreports.engine.JasperFillManager;
+//import net.sf.jasperreports.engine.JasperPrint;
+//import net.sf.jasperreports.engine.JasperReport;
+//import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+//import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * Controller for the Consumes window management.
@@ -86,8 +96,6 @@ public class ConsumesController implements Initializable{
     private String managerId;
    // private static ManagerBean manager;
    // getters y setters
-
-    private final String PROHIBITED_CHARACTERS = "'\"\\;*%()<>|&,-/!?=";
     private Stage stage;
     private ConsumesRestClient consumesClient;
     private static final Logger LOGGER = Logger.getLogger("ConsumesController");
@@ -665,15 +673,33 @@ private void handleException(Exception e) {
     System.err.println(errorMsg); // O usar un logger si prefieres
 }
 
-        
-    
-    
-
-    /**
-     * Sets the stage for this controller.
-     * @param stage The stage to set.
-     */
-//    public void setStage(Stage stage) {
-//        this.stage = stage;
+//    
+//    private void handlePrintAction(ActionEvent event){
+//        try {
+//            LOGGER.info("Beginning printing action...");
+//           
+//            JasperReport report=
+//                JasperCompileManager.compileReport(getClass()
+//                    .getResourceAsStream("/ui/reports/ConsumesReport.jrxml"));
+//            //Data for the report: a collection of UserBean passed as a JRDataSource 
+//            //implementation 
+//            JRBeanCollectionDataSource dataItems=
+//                    new JRBeanCollectionDataSource((Collection<ConsumesBean>)this.tableConsumes.getItems());
+//            //Map of parameter to be passed to the report
+//            Map<String,Object> parameters=new HashMap<>();
+//            //Fill report with data
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+//            //Create and show the report window. The second parameter false value makes 
+//            //report window not to close app.
+//            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+//            jasperViewer.setVisible(true);
+//           // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+//        } catch (JRException ex) {
+//            If there is an error show message and
+//            log it.
+//            showErrorAlert("Error al imprimir:\n"+
+//                            ex.getMessage());
+//            
+//        }
 //    }
 }
