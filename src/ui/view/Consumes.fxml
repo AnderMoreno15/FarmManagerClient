@@ -80,5 +80,6 @@
             </Menu>
          </menus>
       </MenuBar>
+       <fx:include fx:id="menuBar" source="Menu.fxml" />
    </children>
 </AnchorPane>
