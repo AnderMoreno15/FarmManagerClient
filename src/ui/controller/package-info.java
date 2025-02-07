@@ -16,7 +16,6 @@
  * The controllers ensure proper event handling, data validation, and integration with 
  * the services responsible for data retrieval and modification.
  * </p>
- * <p>
  * Common functionalities include:
  * <ul>
  *     <li>Handling user inputs and triggering corresponding actions.</li>
@@ -24,7 +23,6 @@
  *     <li>Interacting with service classes to fetch and manipulate data.</li>
  *     <li>Managing alerts, logging, and error handling within the UI layer.</li>
  * </ul>
- * </p>
  * 
  * @author Aitziber
  */

@@ -1,8 +1,29 @@
+/**
+ * A custom TableCell factory for displaying a Spinner control in a TableView cell 
+ * that holds a Float value.
+ * <p>
+ * This factory creates a spinner for editing values within a specific range (min, max, step) 
+ * and commits the changes when the value is modified or the Spinner loses focus.
+ * </p>
+ * 
+ * <h2>Key Features:</h2>
+ * <ul>
+ *   <li>Displays a Spinner for editing Float values.</li>
+ *   <li>Automatically commits changes when the value is modified or when the Spinner loses focus.</li>
+ *   <li>Reverts to a Label for displaying the value when not editing.</li>
+ * </ul>
+ * 
+ * @param min The minimum value for the Spinner.
+ * @param max The maximum value for the Spinner.
+ * @param step The step value for the Spinner.
+ * @author Ander
+ * @author Iñigo
+ * @version 1.0
+ */
 package ui.cellFactories;
 
 import DTO.ProductBean;
 import javafx.scene.control.*;
-import javafx.util.StringConverter;
 
 public class SpinnerTableCellFactory extends TableCell<ProductBean, Float> {
     private final Spinner<Double> spinner;

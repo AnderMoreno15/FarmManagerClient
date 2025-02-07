@@ -66,6 +66,23 @@ public class AnimalGroupBean implements Serializable, Cloneable {
      */
     public AnimalGroupBean() {
     }
+    
+    /**
+     * Constructs an AnimalGroupBean with the specified attributes for testing purposes.
+     *
+     * @param id id of the animal group.
+     * @param name the name of the animal group.
+     * @param area the area where the animal group is located.
+     * @param description a description of the animal group.
+     * @param creationDate the creation date of the animal group.
+     */
+    public AnimalGroupBean(Long id, String name, String area, String description, Date creationDate) {
+        this.id = id;
+        this.name = name;
+        this.area = area;
+        this.description = description;
+        this.creationDate = creationDate;
+    }
 
     /**
      * Constructs an AnimalGroupBean with the specified attributes.

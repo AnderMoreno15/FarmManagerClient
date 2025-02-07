@@ -7,6 +7,7 @@ import javax.ws.rs.core.GenericType;
 import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import ui.utilities.ConfigReader;
 
 /**
  * Jersey REST client generated for REST resource:ProviderEntityFacadeREST [providerentity]<br>
@@ -24,7 +25,7 @@ public class ProviderRESTClient implements IProviderManager {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/farmapp/webresources";
+    private static final String BASE_URI = ConfigReader.getBaseUri();
     private static final Logger logger = Logger.getLogger(ProviderRESTClient.class.getName());
 
     public ProviderRESTClient() {

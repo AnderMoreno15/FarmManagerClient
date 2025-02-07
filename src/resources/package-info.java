@@ -1,6 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Contains the resources used by the application.
+ * <p>
+ * This package is dedicated to storing all the resources that the application 
+ * requires for its operation, including media files and that are essential for the 
+ * proper functioning of the system. 
+ * </p>
+ *
+ * @author Ander
+ * @author Aitziber
+ * @version 1.0
  */
 package resources;

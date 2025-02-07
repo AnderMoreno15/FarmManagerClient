@@ -12,6 +12,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import ui.utilities.ConfigReader;
 
 /**
  * Jersey REST client generated for REST resource:ProductEntityFacadeREST [productentity]<br>
@@ -29,7 +30,7 @@ public class ProductRESTClient implements IProductManager {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/farmapp/webresources";
+    private static final String BASE_URI = ConfigReader.getBaseUri();
 
     public ProductRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
