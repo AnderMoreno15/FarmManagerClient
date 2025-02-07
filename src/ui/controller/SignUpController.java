@@ -8,9 +8,14 @@ package ui.controller;
 import businessLogic.manager.ManagerFactory;
 import exceptions.ExistingUserException;
 import DTO.ManagerBean;
+import encryption.SymmetricEncryptor;
+import java.io.FileInputStream;
 import ui.utilities.WindowManager;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -32,8 +37,11 @@ import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
+import ui.utilities.ConfigReader;
 
 /**
  * Controller class for the Sign Up screen. Manages user registration, input validation, and navigation actions. This class handles user interactions on the sign-up screen, including: - Field validation methods - Password visibility toggle - Sign-up logic with error handling for various exceptions
@@ -296,27 +304,71 @@ public class SignUpController {
      * @throws ExistingUserException if the user already exists.
      * @throws ServerException if a server error occurs during registration.
      */
-    private void handleSignUpButtonAction(ActionEvent actionEvent) {
-        tfPassword.setText(pfPassword.getText());
-         
-        ManagerBean manager = new ManagerBean(cbActive.isSelected(), tfPassword.getText().trim(), tfName.getText().trim(), tfEmail.getText().trim(), "000000000", 
-                tfCity.getText().trim(), tfZip.getText().trim(), tfAddress.getText().trim());
-        logger.log(Level.INFO, "Manager signed up successfully");
-        
+//    private void handleSignUpButtonAction(ActionEvent actionEvent) {
+//        tfPassword.setText(pfPassword.getText());
+//         
+//        ManagerBean manager = new ManagerBean(cbActive.isSelected(), tfPassword.getText().trim(), tfName.getText().trim(), tfEmail.getText().trim(), "000000000", 
+//                tfCity.getText().trim(), tfZip.getText().trim(), tfAddress.getText().trim());
+//        logger.log(Level.INFO, "Manager signed up successfully");
+//        
+//        try {
+//            /////
+//            ManagerBean existingManager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {
+//            }, tfEmail.getText().trim());
+//            if (existingManager != null ) {
+//                throw new ExistingUserException("User already exists, please try with another email");
+//            }
+//            
+//            logger.log(Level.INFO, "Creating manager: {0}", manager.toString());
+//            ManagerFactory.get().signUp(manager);
+//            logger.log(Level.INFO, "Manager signed up successfully");
+//
+//            ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+//            WindowManager.openWindow("/ui/view/SignIn.fxml", "SignIn");
+//        } catch (ExistingUserException ex) {
+//            lblErrorSignUp.setText("User already exists");
+//            logger.log(Level.INFO, "User already exists: ", ex);
+//
+//        } catch (WebApplicationException ex) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("ERROR");
+//            alert.setHeaderText("Server error");
+//            alert.setContentText("There was an error in the server, please contact the responsible technician"+ ex.getMessage());
+//            alert.showAndWait();
+//            logger.log(Level.SEVERE, "Server error", ex);
+//        }
+//    }
+       private void handleSignUpButtonAction(ActionEvent actionEvent) {
         try {
-            /////
-            ManagerBean existingManager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {
-            }, tfEmail.getText().trim());
-            if (existingManager != null ) {
+            
+            String encryptedEmail = SymmetricEncryptor.encrypt(tfEmail.getText().trim());
+            String encryptedPassword = SymmetricEncryptor.encrypt(tfPassword.getText().trim());
+           
+            ManagerBean manager = new ManagerBean(
+                cbActive.isSelected(),
+                encryptedPassword,
+                tfName.getText().trim(),
+                encryptedEmail,
+                "000000000",
+                tfCity.getText().trim(),
+                tfZip.getText().trim(),
+                tfAddress.getText().trim()
+            );
+
+            logger.log(Level.INFO, "Verificando si el usuario ya existe...");
+            ManagerBean existingManager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {}, encryptedEmail);
+
+            if (existingManager != null) {
                 throw new ExistingUserException("User already exists, please try with another email");
             }
-            
-            logger.log(Level.INFO, "Creating manager: {0}", manager.toString());
+
+            logger.log(Level.INFO, "Registrando manager: {0}", manager.toString());
             ManagerFactory.get().signUp(manager);
-            logger.log(Level.INFO, "Manager signed up successfully");
+            logger.log(Level.INFO, "Manager registrado con éxito");
 
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
             WindowManager.openWindow("/ui/view/SignIn.fxml", "SignIn");
+
         } catch (ExistingUserException ex) {
             lblErrorSignUp.setText("User already exists");
             logger.log(Level.INFO, "User already exists: ", ex);
@@ -325,9 +377,13 @@ public class SignUpController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText("Server error");
-            alert.setContentText("There was an error in the server, please contact the responsible technician"+ ex.getMessage());
+            alert.setContentText("There was an error in the server, please contact the responsible technician" + ex.getMessage());
             alert.showAndWait();
             logger.log(Level.SEVERE, "Server error", ex);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error en el proceso de registro", e);
         }
     }
+
+   
 }

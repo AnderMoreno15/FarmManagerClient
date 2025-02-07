@@ -7,6 +7,7 @@ package ui.controller;
 
 import businessLogic.manager.ManagerFactory;
 import DTO.ManagerBean;
+import encryption.SymmetricEncryptor;
 import ui.utilities.WindowManager;
 import ui.controller.MenuController;
 import exceptions.InactiveUserException;
@@ -158,37 +159,67 @@ public class SignInController {
      *
      * @param actionEvent Action event triggered by the Sign In button.
      */
+//    private void handleSignInButtonAction(ActionEvent actionEvent) {
+//        String username = tfUsername.getText();
+//        String password = pfPasswd.getText();
+//        
+//        ManagerBean m = new ManagerBean();
+//        m.setEmail(username);
+//        m.setPassword(password);
+//
+//        if (username.isEmpty() || password.isEmpty()) {
+//            lblError.setText("Please fill out all fields.");
+//        } else {
+//            try {
+//                lblError.setText("");
+//
+//                ManagerBean manager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {}, username);
+//                ManagerBean signedManager = ManagerFactory.get().signIn(m, new GenericType<ManagerBean>(){});
+//
+//                if (!signedManager.isIsActive()) {
+//                    throw new InactiveUserException("User is not active");
+//                }
+//
+//            // Autenticación exitosa, proceder a la siguiente pantalla
+//            ((Node) actionEvent.getSource()).getScene().getWindow().hide();
+//            MenuController.setManager(signedManager);
+//            AnimalGroupController.setManager(signedManager);
+//            WindowManager.openWindowWithManager("/ui/view/AnimalGroup.fxml", "Animal Group", signedManager);
+//                
+//
+//            } catch (WebApplicationException ex) {
+//                showErrorAlert("Server error", "There was an error on the server, please contact support.");
+//                logger.log(Level.SEVERE, "Server error", ex);
+//            } catch (InactiveUserException ex) {
+//                showErrorAlert("User error", "Your account is deactivated, please contact support.");
+//                logger.log(Level.SEVERE, "Inactive user", ex);
+//            }
+//        }
+//    }
     private void handleSignInButtonAction(ActionEvent actionEvent) {
-        String username = tfUsername.getText();
-        String password = pfPasswd.getText();
         
-        ManagerBean m = new ManagerBean();
-        m.setEmail(username);
-        m.setPassword(password);
+        String username = tfUsername.getText().trim();
+        String password = pfPasswd.getText().trim();
 
         if (username.isEmpty() || password.isEmpty()) {
             lblError.setText("Please fill out all fields.");
         } else {
             try {
                 lblError.setText("");
-
-                ManagerBean manager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {}, username);
-                ManagerBean signedManager = ManagerFactory.get().signIn(m, new GenericType<ManagerBean>(){})
-                        
-//          ManagerBean signedManager = ManagerFactory.get().signIn(new GenericType<ManagerBean>() m);
-;
-
                 
-//                if (!UserAuthService.verifyPassword(password, manager.getPassword())) {
-//                    actionEvent.consume();
-//                    throw new UserCredentialException("Incorrect password");
-//                }
+                String encryptedUsername = SymmetricEncryptor.encrypt(username);
+                String encryptedPassword = SymmetricEncryptor.encrypt(password);
+                
+                ManagerBean m = new ManagerBean();
+                m.setEmail(encryptedUsername);
+                m.setPassword(encryptedPassword);
 
+                ManagerBean signedManager = ManagerFactory.get().signIn(m, new GenericType<ManagerBean>(){});
+                //si viene null sacar alert diciendo que es incorrecto
                 if (!signedManager.isIsActive()) {
                     throw new InactiveUserException("User is not active");
                 }
 
-            // Autenticación exitosa, proceder a la siguiente pantalla
             ((Node) actionEvent.getSource()).getScene().getWindow().hide();
             MenuController.setManager(signedManager);
             AnimalGroupController.setManager(signedManager);
@@ -201,6 +232,8 @@ public class SignInController {
             } catch (InactiveUserException ex) {
                 showErrorAlert("User error", "Your account is deactivated, please contact support.");
                 logger.log(Level.SEVERE, "Inactive user", ex);
+            } catch (Exception ex) {
+                Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -211,6 +244,7 @@ public class SignInController {
      * @param actionEvent action event triggered by the Sign Up hyperlink.
      */
     public void handleSignUpHyperlinkAction(ActionEvent actionEvent) {
+        ((Node) actionEvent.getSource()).getScene().getWindow().hide();
         WindowManager.openWindow("/ui/view/SignUp.fxml", "Sign Up");
     }
     
@@ -231,7 +265,8 @@ public class SignInController {
             }
 
             try {
-                ManagerBean manager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {}, email);
+                String encryptedEmail = SymmetricEncryptor.encrypt(email);
+                ManagerBean manager = ManagerFactory.get().getManagerByEmail(new GenericType<ManagerBean>() {}, encryptedEmail);
                 if (manager ==null){
                     //aviso?
                     return;

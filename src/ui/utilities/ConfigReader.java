@@ -30,4 +30,7 @@ public class ConfigReader {
     public static String getBaseUri() {
         return properties.getProperty("BASE_URI");
     }
+    public static String getKey() {
+        return properties.getProperty("key");
+    }
 }
