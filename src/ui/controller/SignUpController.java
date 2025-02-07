@@ -341,8 +341,33 @@ public class SignUpController {
        private void handleSignUpButtonAction(ActionEvent actionEvent) {
         try {
             
-            String encryptedEmail = SymmetricEncryptor.encrypt(tfEmail.getText().trim());
-            String encryptedPassword = SymmetricEncryptor.encrypt(tfPassword.getText().trim());
+        String email = tfEmail.getText().trim();
+        String password = tfPassword.getText().trim();
+        if (password.isEmpty()) {
+            password = pfPassword.getText().trim();
+        }
+        
+        if (email.isEmpty() || password.isEmpty()) {
+            logger.severe("Error: Email o Password están vacíos");
+            lblErrorSignUp.setText("Email o contraseña vacíos.");
+            return; 
+        }
+
+        // Log antes de encriptar
+        logger.log(Level.INFO, "Email antes de encriptar: {0}", email);
+        logger.log(Level.INFO, "Password antes de encriptar: {0}", password);
+
+        // Encriptar email y contraseña
+        String encryptedEmail = SymmetricEncryptor.encrypt(email);
+        String encryptedPassword = SymmetricEncryptor.encrypt(password);
+
+        // Log después de encriptar
+        logger.log(Level.INFO, "Encrypted email: {0}", encryptedEmail);
+        logger.log(Level.INFO, "Encrypted password: {0}", encryptedPassword);
+
+            
+//            String encryptedEmail = SymmetricEncryptor.encrypt(tfEmail.getText().trim());
+//            String encryptedPassword = SymmetricEncryptor.encrypt(tfPassword.getText().trim());
            
             ManagerBean manager = new ManagerBean(
                 cbActive.isSelected(),
