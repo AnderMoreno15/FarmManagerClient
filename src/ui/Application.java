@@ -34,7 +34,7 @@ public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
         
-        Parent root = FXMLLoader.load(getClass().getResource("view/SignIn.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("view/Product.fxml"));
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("view/styles.css").toExternalForm());

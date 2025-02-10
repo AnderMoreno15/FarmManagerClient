@@ -42,14 +42,17 @@ import javax.ws.rs.core.GenericType;
 import businessLogic.product.ProductManagerFactory;
 import businessLogic.provider.ProviderManagerFactory;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import javax.ws.rs.ProcessingException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -143,7 +146,6 @@ public class ProductController implements Initializable {
         dpSearch.setDisable(true);
 
 //        btnPrint.setOnAction(this::handlePrintAction);
-
         // Configure menu items.
 //        miDelete.setDisable(true);
 //        // Enable the delete menu item only when at least one item is selected.
@@ -236,6 +238,7 @@ public class ProductController implements Initializable {
         // Añadir listener para el Botón btnSearch y btnAdd
         btnSearch.setOnAction(this::onSearchButtonClicked);
         btnAdd.setOnAction(this::onAddButtonClicked);
+        miDelete.setOnAction(this::onDeleteMenuItemClicked);
     }
 
     private <T> void handleEditCommit(CellEditEvent<ProductBean, T> event, String fieldName) {
@@ -377,7 +380,7 @@ public class ProductController implements Initializable {
             newProduct.setName("New Product");
             newProduct.setPrice(0f);
             newProduct.setStock(0);
-            newProduct.setMonthlyConsume(0f);
+            newProduct.setCreateDate(java.sql.Date.valueOf(LocalDate.now()));  // Usar LocalDate.now() para obtener la fecha de hoy
 
             // Validaciones antes de enviar la solicitud
             if (newProduct.getName() == null || newProduct.getName().trim().isEmpty()) {
@@ -415,38 +418,21 @@ public class ProductController implements Initializable {
     }
 
     private void onDeleteMenuItemClicked(ActionEvent event) {
-        ObservableList<ProductBean> selectedProducts = tbProduct.getSelectionModel().getSelectedItems();
-        List<ProductBean> successfullyDeleted = new ArrayList<>();
+        try {
+            ObservableList<ProductBean> selectedProducts = tbProduct.getSelectionModel().getSelectedItems();
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to delete the selected products?",
+                    ButtonType.YES, ButtonType.NO);
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
 
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to delete the selected product(s)?", ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> result = confirmationAlert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            try {
-                for (ProductBean selectedProduct : selectedProducts) {
-                    try {
-                        System.out.println(selectedProduct.toString());
-                        ProductManagerFactory.get().deleteProductById(String.valueOf(selectedProduct.getId()));
-                        successfullyDeleted.add(selectedProduct);
-
-                    } catch (WebApplicationException e) {
-                        System.err
-                                .println("Error deleting product: " + selectedProduct.getName() + " - " + e.getMessage());
-                    }
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                for (ProductBean product : selectedProducts) {
+                    ProductManagerFactory.get().deleteProductById(product.getId().toString());
                 }
-
-                if (!successfullyDeleted.isEmpty()) {
-                    tbProduct.getItems().removeAll(successfullyDeleted);
-                    tbProduct.getSelectionModel().clearSelection();
-                    tbProduct.refresh();
-                }
-
-            } catch (Exception e) {
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR,
-                        "Unexpected error during deletion: " + e.getMessage(),
-                        ButtonType.OK);
-                errorAlert.showAndWait();
             }
+            showAllProducts();
+        } catch (WebApplicationException | ProcessingException e) {
+            showErrorAlert("SERVER ERROR", "Please contact support", e.getMessage());
         }
     }
 
@@ -536,4 +522,11 @@ public class ProductController implements Initializable {
         ProductController.manager = manager;
     }
 
+    private void showErrorAlert(String head, String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(head);
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

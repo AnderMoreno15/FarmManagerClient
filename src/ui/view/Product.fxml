@@ -20,96 +20,96 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <AnchorPane prefHeight="720.0" prefWidth="1024.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controller.ProductController">
-   <children>
-      <GridPane hgap="10.0" layoutX="20.0" layoutY="28.0" prefHeight="550.0" prefWidth="984.0" vgap="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
-        <columnConstraints>
-            <ColumnConstraints maxWidth="121.6" minWidth="38.0" prefWidth="103.0" />
-            <ColumnConstraints maxWidth="237.0" minWidth="73.0" prefWidth="195.0" />
-          <ColumnConstraints maxWidth="185.0" minWidth="68.0" prefWidth="123.0" />
-            <ColumnConstraints maxWidth="454.0" minWidth="57.0" prefWidth="159.0" />
-            <ColumnConstraints maxWidth="565.0" minWidth="203.0" prefWidth="249.0" />
-          <ColumnConstraints maxWidth="120.0" minWidth="76.0" prefWidth="99.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="296.0" minHeight="26.0" prefHeight="32.0" />
-          <RowConstraints maxHeight="563.0" minHeight="30.0" prefHeight="552.0" />
-            <RowConstraints maxHeight="341.0" minHeight="0.0" prefHeight="14.0" />
-            <RowConstraints maxHeight="393.0" minHeight="0.0" prefHeight="15.0" />
-        </rowConstraints>
-         <children>
-            <ComboBox fx:id="comboSearch" prefWidth="150.0" promptText="Filter by:" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </ComboBox>
-            <DatePicker fx:id="dpSearch" prefHeight="27.2" prefWidth="328.8" promptText="Enter or select a date..." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
-               <cursor>
-                  <Cursor fx:constant="TEXT" />
-               </cursor>
-            </DatePicker>
-            <TextField fx:id="tfSearch" promptText="Search..." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-               <cursor>
-                  <Cursor fx:constant="TEXT" />
-               </cursor>
-            </TextField>
-            <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Search" GridPane.columnIndex="4" GridPane.valignment="BOTTOM">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </Button>
-            <TableView fx:id="tbProduct" editable="true" prefHeight="0.0" prefWidth="982.0" GridPane.columnSpan="6" GridPane.rowIndex="1">
-              <columns>
-                <TableColumn fx:id="tcName" prefWidth="139.20000612735748" text="Product" />
-                <TableColumn fx:id="tcPrice" minWidth="2.39996337890625" prefWidth="148.0" text="Price (€/Kg)" />
-                  <TableColumn fx:id="tcMonthlyConsume" prefWidth="149.60003662109375" text="Mensual consume (Kg)" />
-                  <TableColumn fx:id="tcStock" prefWidth="132.79995727539062" text="Stock (Kg)" />
-                  <TableColumn fx:id="tcProviders" prefWidth="111.199951171875" text="Providers" />
-                  <TableColumn fx:id="tcCreatedDate" prefWidth="159.19989013671875" text="Created date" />
-              </columns>
-               <contextMenu>
-                  <ContextMenu>
+    <children>
+        <GridPane hgap="10.0" layoutX="20.0" layoutY="28.0" prefHeight="550.0" prefWidth="984.0" vgap="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="45.0">
+            <columnConstraints>
+                <ColumnConstraints maxWidth="121.6" minWidth="38.0" prefWidth="103.0" />
+                <ColumnConstraints maxWidth="237.0" minWidth="73.0" prefWidth="195.0" />
+                <ColumnConstraints maxWidth="185.0" minWidth="68.0" prefWidth="123.0" />
+                <ColumnConstraints maxWidth="454.0" minWidth="57.0" prefWidth="159.0" />
+                <ColumnConstraints maxWidth="565.0" minWidth="203.0" prefWidth="249.0" />
+                <ColumnConstraints maxWidth="120.0" minWidth="76.0" prefWidth="99.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="296.0" minHeight="26.0" prefHeight="32.0" />
+                <RowConstraints maxHeight="563.0" minHeight="30.0" prefHeight="552.0" />
+                <RowConstraints maxHeight="341.0" minHeight="0.0" prefHeight="14.0" />
+                <RowConstraints maxHeight="393.0" minHeight="0.0" prefHeight="15.0" />
+            </rowConstraints>
+            <children>
+                <ComboBox fx:id="comboSearch" prefWidth="150.0" promptText="Filter by:" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                    <GridPane.margin>
+                        <Insets />
+                    </GridPane.margin>
+                </ComboBox>
+                <DatePicker fx:id="dpSearch" prefHeight="27.2" prefWidth="328.8" promptText="Enter or select a date..." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
+                    <cursor>
+                        <Cursor fx:constant="TEXT" />
+                    </cursor>
+                </DatePicker>
+                <TextField fx:id="tfSearch" promptText="Search..." GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.valignment="BOTTOM">
+                    <GridPane.margin>
+                        <Insets />
+                    </GridPane.margin>
+                    <cursor>
+                        <Cursor fx:constant="TEXT" />
+                    </cursor>
+                </TextField>
+                <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Search" GridPane.columnIndex="4" GridPane.valignment="BOTTOM">
+                    <GridPane.margin>
+                        <Insets />
+                    </GridPane.margin>
+                </Button>
+                <TableView fx:id="tbProduct" editable="true" prefHeight="0.0" prefWidth="982.0" GridPane.columnSpan="6" GridPane.rowIndex="1">
+                    <columns>
+                        <TableColumn fx:id="tcName" prefWidth="139.20000612735748" text="Product" />
+                        <TableColumn fx:id="tcPrice" minWidth="2.39996337890625" prefWidth="148.0" text="Price (€/Kg)" />
+                        <TableColumn fx:id="tcMonthlyConsume" prefWidth="149.60003662109375" text="Mensual consume (Kg)" />
+                        <TableColumn fx:id="tcStock" prefWidth="132.79995727539062" text="Stock (Kg)" />
+                        <TableColumn fx:id="tcProviders" prefWidth="111.199951171875" text="Providers" />
+                        <TableColumn fx:id="tcCreatedDate" prefWidth="159.19989013671875" text="Created date" />
+                    </columns>
+                    <contextMenu>
+                        <ContextMenu>
+                            <items>
+                                <MenuItem fx:id="miDelete" mnemonicParsing="false" text="Delete" />                    
+                            </items>
+                        </ContextMenu>
+                    </contextMenu>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </TableView>
+                <Label fx:id="lblInfo" alignment="CENTER" prefHeight="70.0" prefWidth="907.0" text="This is a label to inform of errors or confirmations of any inputted data into the table" wrapText="true" GridPane.columnSpan="6" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                    <GridPane.margin>
+                        <Insets />
+                    </GridPane.margin>
+                </Label>
+                <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="Add" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                <Separator prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+            </children>
+        </GridPane>
+        <MenuBar prefHeight="36.0" prefWidth="1024.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Navigate to">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" text="Animal" />
+                        <MenuItem mnemonicParsing="false" text="Animal group" />
+                        <MenuItem mnemonicParsing="false" text="Consume" />
                     </items>
-                  </ContextMenu>
-               </contextMenu>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </TableView>
-            <Label fx:id="lblInfo" alignment="CENTER" prefHeight="70.0" prefWidth="907.0" text="This is a label to inform of errors or confirmations of any inputted data into the table" wrapText="true" GridPane.columnSpan="6" GridPane.halignment="CENTER" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </Label>
-            <Button fx:id="btnAdd" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="Add" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Separator prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="2" />
-         </children>
-      </GridPane>
-    <MenuBar prefHeight="36.0" prefWidth="1024.0">
-      <menus>
-        <Menu mnemonicParsing="false" text="Navigate to">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Animal" />
-            <MenuItem mnemonicParsing="false" text="Animal group" />
-            <MenuItem mnemonicParsing="false" text="Consume" />
-          </items>
-        </Menu>
-            <Menu mnemonicParsing="false" text="Report">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Print" />
-               </items>
-            </Menu>
-      </menus>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-    </MenuBar>
-   </children>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Report">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Print" />
+                    </items>
+                </Menu>
+            </menus>
+            <cursor>
+                <Cursor fx:constant="HAND" />
+            </cursor>
+        </MenuBar>
+    </children>
 </AnchorPane>
