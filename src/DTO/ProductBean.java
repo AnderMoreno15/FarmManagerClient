@@ -6,6 +6,7 @@
 package DTO;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -32,6 +33,7 @@ public class ProductBean implements Serializable, Cloneable {
 
     public ProductBean(String name) {
         this.name = name;
+        this.createDate = Date.from(Instant.now());
     }
 
     public ProductBean(Long id, String name, Float monthlyConsume, Float price, Integer stock, ProviderBean providerId, Date createDate) {

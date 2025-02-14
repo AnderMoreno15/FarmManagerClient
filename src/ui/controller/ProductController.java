@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
+        
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,7 +45,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
@@ -144,15 +143,7 @@ public class ProductController implements Initializable {
         lblInfo.setVisible(false);
         // Deshabilitar el DatePicker dpSearch
         dpSearch.setDisable(true);
-
-//        btnPrint.setOnAction(this::handlePrintAction);
-        // Configure menu items.
-//        miDelete.setDisable(true);
-//        // Enable the delete menu item only when at least one item is selected.
-//        tbProduct.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ProductBean>) change -> {
-//            miDelete.setDisable(tbProduct.getSelectionModel().getSelectedItems().isEmpty());
-//        });
-//        miDelete.setOnAction(this::onDeleteMenuItemClicked);
+        
         // Cargar la tabla:
         // Establecer como editables las columnas Product, Price, Stock y Providers.
         // Llamar al método de lógica getAllProducts() y obtener una lista con todos los
@@ -174,11 +165,18 @@ public class ProductController implements Initializable {
         tcMonthlyConsume.setCellValueFactory(new PropertyValueFactory<ProductBean, String>("monthlyConsume"));
         tcMonthlyConsume.setEditable(false);
 
-        // Stock: Integer | Editable (como SpinnerTableCell)
+        // Stock: Integer | Editable
         tcStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
-        // TODO cambiar a factoria de celda de Spinner
-        tcStock.setCellFactory(
-                TextFieldTableCell.<ProductBean, Integer>forTableColumn(new IntegerStringConverter()));
+        tcStock.setCellFactory(TextFieldTableCell.<ProductBean, Integer>forTableColumn(new IntegerStringConverter() {
+            @Override
+            public Integer fromString(String value) {
+                try {
+                    return Integer.parseInt(value);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        }));
         tcStock.setOnEditCommit(event -> handleEditCommit(event, "stock"));
 
         // Providers: List<Providers> | Editable (como ComboBox)
@@ -284,6 +282,8 @@ public class ProductController implements Initializable {
                         productCopy.setStock((Integer) newValue);
                         ProductManagerFactory.get().updateProduct(productCopy);
                         product.setStock((Integer) newValue);
+                    } else {
+                        throw new NumberFormatException("Ha introducido un valor no numérico. Introduzca un número entero por favor.");
                     }
                     break;
                 case "providers":
@@ -302,7 +302,6 @@ public class ProductController implements Initializable {
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             alert.showAndWait();
-            lblInfo.setText(e.getMessage());
             event.consume();
         }
     }
@@ -498,19 +497,6 @@ public class ProductController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "Error inesperado al cargar los productos: " + e.getMessage(), ButtonType.OK);
             alert.showAndWait();
-        }
-    }
-
-    private void focusNewProduct() {
-        final int NEW_PRODUCT_ROW;
-        for (int row = 0; row < tbProduct.getItems().size(); row++) {
-            ProductBean product = tbProduct.getItems().get(row);
-            if (product.getName().equals("New Product")) {
-                NEW_PRODUCT_ROW = row;
-                Platform.runLater(() -> tbProduct.edit(NEW_PRODUCT_ROW, tcName));
-                tbProduct.refresh();
-                break;
-            }
         }
     }
 
