@@ -5,7 +5,6 @@
  */
 package businessLogic.product;
 
-import DTO.ProductBean;
 
 /**
  *
@@ -13,7 +12,7 @@ import DTO.ProductBean;
  */
 public class ProductManagerFactory {
 
-    public static ProductRESTClient get() {
+    public static IProductManager get() {
         return new ProductRESTClient();
     }
 

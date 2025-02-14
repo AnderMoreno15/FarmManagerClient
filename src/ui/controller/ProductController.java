@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-        
+
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,7 +46,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.util.Callback;
@@ -143,7 +142,7 @@ public class ProductController implements Initializable {
         lblInfo.setVisible(false);
         // Deshabilitar el DatePicker dpSearch
         dpSearch.setDisable(true);
-        
+
         // Cargar la tabla:
         // Establecer como editables las columnas Product, Price, Stock y Providers.
         // Llamar al método de lógica getAllProducts() y obtener una lista con todos los
@@ -202,18 +201,7 @@ public class ProductController implements Initializable {
                         .orElse(null);
             }
         }, providerData)); // Pasa la lista de proveedores como parámetro
-        tcProviders.setOnEditCommit(event -> {
-            TablePosition<ProductBean, ProviderBean> pos = event.getTablePosition();
-            ProviderBean newProvider = event.getNewValue(); // Nuevo proveedor seleccionado
-            int row = pos.getRow();
-            ProductBean product = event.getTableView().getItems().get(row);
-
-            // Actualiza el proveedor en el producto
-            product.setProvider(newProvider);
-
-            // Actualiza la tabla
-            event.getTableView().refresh();
-        });
+        tcProviders.setOnEditCommit(event -> handleEditCommit(event, "providers"));
         tcProviders.setEditable(true);
 
         // Created date: Date Picker | No editable
@@ -275,6 +263,8 @@ public class ProductController implements Initializable {
                         productCopy.setPrice((Float) newValue);
                         ProductManagerFactory.get().updateProduct(productCopy);
                         product.setPrice((Float) newValue);
+                    }else {
+                        throw new IllegalArgumentException("Ha introducido un valor no numérico. Introduzca un número decimal por favor.");
                     }
                     break;
                 case "stock":
@@ -283,23 +273,28 @@ public class ProductController implements Initializable {
                         ProductManagerFactory.get().updateProduct(productCopy);
                         product.setStock((Integer) newValue);
                     } else {
-                        throw new NumberFormatException("Ha introducido un valor no numérico. Introduzca un número entero por favor.");
+                        throw new NumberFormatException("Ha introducido un número no entero. Introduzca un número entero por favor.");
                     }
                     break;
                 case "providers":
                     if (newValue instanceof ProviderBean) {
+                        logger.info("Provider value changed to " + ((ProviderBean) newValue).getName());
                         productCopy.setProvider((ProviderBean) newValue);
+                        logger.info("New product's provider is now: " + productCopy.getProvider().getName());
                         ProductManagerFactory.get().updateProduct(productCopy);
+                        logger.info("Product " + product.getName() + " has been updated.");
                         product.setProvider((ProviderBean) newValue);
                     }
                     break;
                 default:
+                    logger.info("Unknown field detected: " + fieldName);
                     throw new IllegalArgumentException("Campo desconocido: " + fieldName);
             }
 
             lblInfo.setText("Product's information has been successfully updated.");
             event.getTableView().refresh();
         } catch (Exception e) {
+            logger.info("An error ocurred with the following message: " + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             alert.showAndWait();
             event.consume();
@@ -359,7 +354,7 @@ public class ProductController implements Initializable {
                     break;
 
                 default:
-                    System.out.println("Opción de búsqueda no válida: " + searchType);
+                    logger.info("Opción de búsqueda no válida: " + searchType);
                     showAllProducts();
                     break;
             }
@@ -369,7 +364,10 @@ public class ProductController implements Initializable {
                 tbProduct.setItems(productData);
             }
         } catch (WebApplicationException e) {
-            System.err.println("Error fetching product: " + e.getMessage());
+            logger.warning("Error fetching product: " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
+            alert.showAndWait();
+            event.consume();
         }
     }
 
@@ -406,13 +404,15 @@ public class ProductController implements Initializable {
                 lblInfo.setText("Nuevo producto añadido correctamente.");
                 btnSearch.fire();
             } catch (WebApplicationException e) {
+                logger.info("Error while creating the product "+newProduct);
                 String errorResponse = e.getResponse().readEntity(String.class);
                 throw new IllegalArgumentException("Error en la creación del producto: " + errorResponse);
             }
         } catch (Exception e) {
+            logger.info("An error ocurred with the following message: " + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.OK);
             alert.showAndWait();
-            lblInfo.setText(e.getMessage());
+            event.consume();
         }
     }
 
