@@ -59,9 +59,12 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 import java.util.Collection;
 import java.util.Map;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import net.sf.jasperreports.engine.JasperPrint;
+import ui.help.AnimalHelpController;
 
 
 /**
@@ -112,6 +115,11 @@ public class AnimalController implements Initializable {
     @FXML
     private Button btnPrint;
     
+    /**
+     * Button to open the help view.
+     */
+    @FXML
+    private Button btnHelp;
     /**
      * Text for the "From" label when searching by date range.
      */
@@ -326,6 +334,7 @@ public class AnimalController implements Initializable {
         }
 
         btnPrint.setOnAction(this::handlePrintAction); 
+        btnHelp.setOnAction(this::handleHelpAction);
     }
     
     /**
@@ -775,4 +784,21 @@ public class AnimalController implements Initializable {
             alert.showAndWait();
         }
     }
+    
+     private void handleHelpAction(ActionEvent event){
+          try{
+            logger.info("Loading help view...");
+
+            FXMLLoader loader=
+                new FXMLLoader(getClass().getResource("/ui/help/AnimalHelp.fxml"));
+                Parent root = (Parent)loader.load();
+                AnimalHelpController helpController=
+                        ((AnimalHelpController)loader.getController());
+                helpController.initAndShowStage(root);
+        }catch(Exception ex){
+            logger.log(Level.SEVERE,
+                        "Error loading help window: {0}",
+                        ex.getMessage());
+        }
+     }
 }

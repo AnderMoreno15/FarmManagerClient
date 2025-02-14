@@ -100,6 +100,8 @@
                 <Button fx:id="btnSearch" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Search" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
                 <Separator prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="2" />
             <Button fx:id="btnPrint" mnemonicParsing="false" text="Print" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+            <Button fx:id="btnHelp" mnemonicParsing="false" text="Help" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            
            </children>
         </GridPane>
         <fx:include fx:id="menuBar" source="Menu.fxml" />

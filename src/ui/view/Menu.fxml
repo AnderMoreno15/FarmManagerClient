@@ -21,7 +21,11 @@
                     <MenuItem fx:id="miProduct" mnemonicParsing="false" text="Products" />
                 </items>
             </Menu>
-         <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help" />
+         <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+            <!-- <items>
+                <MenuItem fx:id="miHelp" mnemonicParsing="false" onAction="#handleHelpAction" text="Help" />
+            </items> -->
+        </Menu>      
          <Menu fx:id="menuProfile" mnemonicParsing="false" text="Profile">
             <items>
                <MenuItem fx:id="miReset" mnemonicParsing="false" text="Reset password" />

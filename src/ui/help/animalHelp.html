@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Help page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font: 16px arial, sans-serif;
+            }            
+            h3 {
+                font: 20px arial, sans-serif;
+                text-decoration: underline;
+                font-weight: bold;
+            }            
+            h4 {
+                font: 18px arial, sans-serif;
+                text-decoration: underline;
+                font-weight: bold;
+            }            
+        </style>    
+    </head>
+    <body>
+        <div>
+            <h3>Gestión de Animales Ayuda</h3>
+            <img src="../../resources/AnimalTableView.png" alt="Ventana de gestión de animales."/>
+            <h4>Descripción general</h4>
+            <p>Esta ventana muestra, para un administrador dado, una lista en formato tabla con los
+            animales registrados. La ventana permite realizar operaciones de consulta, registro, edición
+            y borrado de animales.
+            La interfaz incluye un menú de navegación, sección de búsqueda y un área de visualización
+            principal con una tabla de datos.
+            </p>
+            
+            <h4>Operaciones</h4>
+            <strong>Crear animales</strong>
+            <p>Para crear un animal deberá pulsar el botón <strong>Add</strong>. 
+                Si no se produce ningún error, se creará el usuario y aparecerá en la 
+                tabla de animales que se muestra en la ventana.</p>
+            
+            <strong>Modificar datos de animales</strong>
+            <p>Para modificar los datos de un animal deberá seleccionar el valor que desee editar. 
+                <p>
+                En los casos de <strong>Name</strong> y <strong>Subespecies</strong>, deberá hacer 
+                doble click e introducir el nuevo valor.
+                </p>
+                <img src="../../resources/EditText.png" alt="Ejemplo de edición de texto."/>
+                <hr/>
+                
+                <p>
+                En los casos de <strong>Birthdate</strong>, contará con un calendario en 
+                el que deberá seleccionar el valor que desee, alternativamente podrá introducirla manualmente.
+                </p>
+                <img src="../../resources/EditDate.png" alt="Ejemplo de edición de fecha."/>
+                <hr/>
+                
+                <p>
+                En los casos de <strong>Animal Group</strong> y <strong>Species</strong>, contará con un control de selección, donde deberá escoger una de las opciones disponibles.
+                </p>
+                <img src="../../resources/EditCombo.png" alt="Ejemplo de edición mediante selección."/>
+                <hr/>
+            <p>Si no se produce ningún error, se modificarán los datos deseados
+            y aparecerán en la tabla.</p>
+            
+            <br/>
+            <strong>Eliminar animales</strong>
+            <p>Para eliminar animales deberá hacer la selección
+            haciendo click en fila deseada de la tabla de animales. Si desea eliminar más de un registro de manera simultánea, podrá seleccionar múltiples líneas manteniendo la tecla "ctrl" pulsada. A continuación, pulse en el botón
+            A continuación, deberá hacer click derecho sobre la tabla y seleccionar la opción 
+            <strong>Delete</strong>, y se le solicitará confirmación para eliminar los registros.
+            Si confirma el borrado y no se produce ningún error se eliminarán los animales y se actualizará 
+            la tabla que se muestra en la ventana.</p>
+            <img src="../../resources/DeleteAnimal.png" alt="Ejemplo de borrado mediante selección individual."/>
+            
+            <br/>
+            <strong>Imprimir listado de animales</strong>
+            <p>Pulsando el botón <strong>Print</strong> se abrirá una ventana donde puede ver un documento
+                que contiene un listado de los animales que existen en la aplicación:
+                <br/>
+                <img src="../../resources/AnimalReport.png" alt="Ventana de informe de animales"/>
+                <br/>
+            Mediante los botones de la parte superior de la ventana podrá imprimir o almacenar dicho informe.</p>
+           
+            <strong>Ayuda</strong>
+            <p>Pulsando el botón <strong>Help</strong> verá este documento de ayuda.</p>
+        </div>
+    </body>
+</html>
