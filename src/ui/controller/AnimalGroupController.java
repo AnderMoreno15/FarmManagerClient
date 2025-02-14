@@ -309,24 +309,25 @@ public class AnimalGroupController implements Initializable {
             switch (column) {
                 case "name":
                     if (newValue instanceof String) {
-                        try {
-                            // Check for duplicate names.
-                            List<AnimalGroupBean> groupList = tbAnimalGroup.getItems();
-                            for (AnimalGroupBean ag : groupList) {
-                                if (ag.getName().equalsIgnoreCase(newValue.toString())) {
-                                    throw new Exception("An animal group with the same name already exists, please try another name");
-                                }
+                        // Check for duplicated names.
+                        List<AnimalGroupBean> groupList = tbAnimalGroup.getItems();
+                        for (AnimalGroupBean ag : groupList) {
+                            if (ag.getName().equalsIgnoreCase(newValue.toString())) {
+                                throw new Exception("An animal group with the same name already exists, please try another name");
+                            } else if (((String) newValue).matches(".*\\d.*")) {
+                                throw new Exception("The name can't have any digit");
                             }
-                            groupCopy.setName((String) newValue);
-                            AnimalGroupFactory.get().updateAnimalGroup(groupCopy);
-                            group.setName((String) newValue);
-                        } catch (Exception e) {
-                            showErrorAlert("ERROR", "Animal group already exists", e.getMessage());
                         }
+                        groupCopy.setName((String) newValue);
+                        AnimalGroupFactory.get().updateAnimalGroup(groupCopy);
+                        group.setName((String) newValue);
                     }
                     break;
                 case "description":
                     if (newValue instanceof String) {
+                        if (((String) newValue).matches(".*\\d.*")) {
+                            throw new Exception("The description can't have any digit");
+                        }
                         groupCopy.setDescription((String) newValue);
                         AnimalGroupFactory.get().updateAnimalGroup(groupCopy);
                         group.setDescription((String) newValue);
@@ -342,13 +343,11 @@ public class AnimalGroupController implements Initializable {
                 default:
                     throw new IllegalArgumentException("The value is not valid: " + column);
             }
-
-            event.getTableView().refresh();
-        } catch (CloneNotSupportedException | IllegalArgumentException e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Error editing Animal Group: ", e);
-        } catch (WebApplicationException | ProcessingException e) {
-            logger.log(Level.SEVERE, "Error fetching animal groups: ", e);
-            showErrorAlert("SERVER ERROR", "Please contact with support", e.getMessage());
+            showErrorAlert("ERROR", "Error editing Animal Group: ", e.getMessage());
+        } finally {
+            event.getTableView().refresh();
         }
     }
 
@@ -419,7 +418,7 @@ public class AnimalGroupController implements Initializable {
     private void onCreateButtonClicked(ActionEvent event) {
         try {
             AnimalGroupBean group = new AnimalGroupBean();
-            String groupName = "Group " + (int) (Math.random() * 1000000);
+            String groupName = "New Group";
             group.setName(groupName);
             group.setDescription("Group of animals");
             group.setArea("Undefined zone");
